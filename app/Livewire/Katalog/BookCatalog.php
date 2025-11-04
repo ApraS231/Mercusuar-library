@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\User;
+namespace App\Livewire\Katalog;
 
 use App\Models\Book;
 use Livewire\Component;
@@ -22,9 +22,9 @@ class BookCatalog extends Component
 
     public function render()
     {
-        $books = Book::query()
+        $books = Book::with('category')
             // Hanya tampilkan buku yang stoknya ada
-            ->where('stok_tersedia', '>', 0) 
+            ->where('stok_tersedia', '>', 0)
             // Logika pencarian
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
@@ -35,8 +35,8 @@ class BookCatalog extends Component
             ->latest('created_at')
             ->paginate(12); // Tampilkan 12 buku per halaman
 
-        return view('livewire.book.show-katalog', [
-            'books' => $books
+        return view('livewire.katalog.book-catalog', [
+            'books' => $books,
         ]);
     }
 }

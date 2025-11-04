@@ -75,4 +75,3 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // Rute Autentikasi (Login, Register, dll)
 // Dibuat oleh Breeze
 require __DIR__.'/auth.php';
-
