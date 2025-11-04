@@ -15,7 +15,7 @@ use Livewire\Attributes\Layout;
 class Dashboard extends Component
 {
     // Properti untuk menyimpan data statistik
-    public $jumlahPeminjamanPending;
+    public $pendingLoans;
     public $jumlahBuku;
     public $jumlahUserAktif;
     public $jumlahOverdue;
@@ -27,7 +27,7 @@ class Dashboard extends Component
     public function mount()
     {
         // Ambil data sesuai logika di ROADMAP
-        $this->jumlahPeminjamanPending = Peminjaman::where('status', StatusPeminjaman::Pending)->count();
+        $this->pendingLoans = Peminjaman::where('status', StatusPeminjaman::Pending)->count();
         $this->jumlahBuku = Book::count();
         $this->jumlahUserAktif = User::where('status_akun', StatusAkun::Aktif)->count();
         $this->jumlahOverdue = Peminjaman::where('status', StatusPeminjaman::Overdue)->count();

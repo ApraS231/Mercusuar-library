@@ -7,7 +7,7 @@
         <!-- Card 1: Peminjaman Pending -->
         <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
             <h2 class="text-sm font-medium text-gray-500 truncate">Peminjaman Pending</h2>
-            <p class="mt-1 text-3xl font-bold text-gray-900">{{ $jumlahPeminjamanPending }}</p>
+            <p class="mt-1 text-3xl font-bold text-gray-900">{{ $pendingLoans }}</p>
         </div>
 
         <!-- Card 2: Total Judul Buku -->
