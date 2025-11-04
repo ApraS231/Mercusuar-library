@@ -30,9 +30,19 @@
                     <span>Manajemen Buku</span>
                 </a>
                 
-                {{-- Tambahkan Link Manajemen User & Peminjaman di sini nanti --}}
-                {{-- <a href="#" class="block px-4 py-2 rounded hover:bg-gray-700">Manajemen Peminjaman</a> --}}
-                {{-- <a href="#" class="block px-4 py-2 rounded hover:bg-gray-700">Manajemen User</a> --}}
+                {{-- Link Manajemen Peminjaman --}}
+                <a href="{{ route('admin.transactions.index') }}"
+                   class="flex items-center space-x-2 px-4 py-2 rounded hover:bg-gray-700 @if(request()->routeIs('admin.transactions.index')) bg-gray-900 font-bold @endif">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h4M8 7a2 2 0 012-2h4a2 2 0 012 2v8a2 2 0 01-2 2H8M2 8h20M2 16h20"></path></svg>
+                    <span>Manajemen Peminjaman</span>
+                </a>
+
+                {{-- Link Manajemen User --}}
+                <a href="{{ route('admin.users.index') }}"
+                   class="flex items-center space-x-2 px-4 py-2 rounded hover:bg-gray-700 @if(request()->routeIs('admin.users.index')) bg-gray-900 font-bold @endif">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.965 5.965 0 0112 13a5.965 5.965 0 013 1.803"></path></svg>
+                    <span>Manajemen User</span>
+                </a>
 
             </nav>
 
