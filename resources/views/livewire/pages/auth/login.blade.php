@@ -1,94 +1,82 @@
 <?php
 
-namespace App\Livewire\Auth;
-
-// use App\Providers\RouteServiceProvider; // (Ini sudah kita hapus)
-use Illuminate\Support\Facades\Auth;
 use App\Enums\Role;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;
-use Livewire\Component;
+use Livewire\Volt\Component;
+use Illuminate\Validation\ValidationException;
 
-#[Layout('livewire.layouts.guest')]
-class Login extends Component
+new #[Layout('layouts.guest')] class extends Component
 {
-    #[Rule('required|string|email')]
     public string $email = '';
-
-    #[Rule('required|string')]
     public string $password = '';
-
-    #[Rule('boolean')]
     public bool $remember = false;
 
     /**
      * Handle an incoming authentication request.
      */
-    public function authenticate(): void
+    public function login(): void
     {
-        $this->validate();
+        $credentials = $this->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
 
-        // Ensure the user is not rate limited
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            
-            // FIX 1: Menggunakan -> bukan .
-            RateLimiter::hit($this->throttleKey()); 
-
-            // FIX 2: $this->only() dan $this->remember sudah benar, 
-            //         ini adalah error palsu dari Intelephense
-            if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-                
-                // FIX 3: Menggunakan -> bukan .
-                RateLimiter::clear($this->throttleKey()); 
-
-                throw ValidationException::withMessages([
-                    'email' => __('auth.failed'),
-                ]);
-            }
+        if (! Auth::attempt($credentials, $this->remember)) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
         }
-
-        RateLimiter::clear($this->throttleKey()); // Ini sudah benar
 
         session()->regenerate();
 
-        // FIX 4: Menambahkan () pada $this->redirect()
-        // FIX 5: navigate: true adalah error palsu Intelephense, ini valid
-        $this->redirect( 
-            session('url.intended', $this->redirectPath()),
-            navigate: true
-        );
-    }
-
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
-    protected function throttleKey(): string
-    {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
-    }
-
-    /**
-     * Render the component.
-     */
-    public function render(): \Illuminate\View\View
-    {
-        return view('livewire.auth.login');
-    }
-
-    /**
-     * Menyediakan path redirect berdasarkan role user.
-     */
-    protected function redirectPath(): string
-    {
         $user = Auth::user();
 
         if ($user->role === Role::Admin) {
-            return '/admin/dashboard';
+            $this->redirect(route('admin.dashboard', absolute: false), navigate: true);
+        } else {
+            $this->redirect(route('dashboard', absolute: false), navigate: true);
         }
-
-        return '/dashboard'; 
     }
-}
+}; ?>
+
+<div>
+    <!-- Session Status -->
+    <x-auth-session-status class="mb-4" :status="session('status')" />
+
+    <form wire:submit="login">
+        <!-- Email Address -->
+        <div>
+            <x-input-label for="email" :value="__('Email')" />
+            <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <!-- Password -->
+        <div class="mt-4">
+            <x-input-label for="password" :value="__('Password')" />
+            <x-text-input wire:model="password" id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        </div>
+
+        <!-- Remember Me -->
+        <div class="block mt-4">
+            <label for="remember" class="inline-flex items-center">
+                <input wire:model="remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+            </label>
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+            @if (Route::has('password.request'))
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>
+                    {{ __('Forgot your password?') }}
+                </a>
+            @endif
+
+            <x-primary-button class="ms-3">
+                {{ __('Log in') }}
+            </x-primary-button>
+        </div>
+    </form>
+</div>
