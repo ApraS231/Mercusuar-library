@@ -8,7 +8,28 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
+            {{-- My Loans Section --}}
+            <div class="mb-8 bg-light-purple p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Peminjaman Saya</h3>
+                @if ($myLoans->isNotEmpty())
+                    <ul class="space-y-4">
+                        @foreach ($myLoans as $loan)
+                            <li class="flex justify-between items-center p-4 bg-white rounded-lg shadow">
+                                <div>
+                                    <span class="font-semibold text-gray-900">{{ $loan->book->judul }}</span>
+                                    <span class="text-sm text-gray-500 block">Jatuh tempo: {{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d F Y') }}</span>
+                                </div>
+                                <a href="{{ route('book.detail', $loan->book->id) }}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Lihat Detail</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <a href="{{ route('user.peminjaman') }}" class="inline-block mt-4 text-indigo-600 hover:text-indigo-900 font-semibold">Lihat Semua Peminjaman &rarr;</a>
+                @else
+                    <p class="text-gray-700">Anda tidak memiliki buku yang sedang dipinjam.</p>
+                @endif
+            </div>
+
             {{-- Search Bar --}}
             <div class="mb-6">
                 <input 

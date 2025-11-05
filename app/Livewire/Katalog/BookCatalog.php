@@ -3,6 +3,7 @@
 namespace App\Livewire\Katalog;
 
 use App\Models\Book;
+use App\Models\Peminjaman;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
@@ -35,8 +36,14 @@ class BookCatalog extends Component
             ->latest('created_at')
             ->paginate(12); // Tampilkan 12 buku per halaman
 
+        $myLoans = Peminjaman::where('user_id', auth()->id())
+            ->where('status', 'DIPINJAM')
+            ->with('book')
+            ->get();
+
         return view('livewire.katalog.book-catalog', [
             'books' => $books,
+            'myLoans' => $myLoans,
         ]);
     }
 }

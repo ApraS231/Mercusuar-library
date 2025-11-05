@@ -14,6 +14,9 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                'light-purple': '#E6E6FA', // Lavender color
+            },
         },
     },
 
