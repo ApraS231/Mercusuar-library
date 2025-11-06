@@ -75,13 +75,16 @@
                     wire:loading.class.delay="opacity-50"
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 transition-opacity">
                 @forelse ($books as $book)
-                    <div class="bg-white shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl">
+                    <div class="group relative bg-white shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl">
                         <a href="{{ route('book.detail', $book->id) }}" class="block">
                             {{-- Gambar Cover --}}
                             <img
                                 src="{{ $book->gambar_cover ? asset('storage/' . $book->gambar_cover) : 'https://placehold.co/400x600/e2e8f0/64748b?text=No+Image' }}"
                                 alt="Cover {{ $book->judul }}"
                                 class="w-full h-64 object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
+                                <span class="text-white text-lg font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">Lihat Detail</span>
+                            </div>
                         </a>
                         
                         <div class="p-4">

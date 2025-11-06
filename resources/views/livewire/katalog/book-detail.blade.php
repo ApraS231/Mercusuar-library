@@ -17,8 +17,13 @@
                     <img src="{{ $book->gambar_cover ? asset('storage/' . $book->gambar_cover) : 'https://placehold.co/400x600/e2e8f0/64748b?text=Perpus+Mercusuar' }}" 
                          alt="Cover {{ $book->judul }}" 
                          class="w-full h-auto object-cover rounded-md shadow-md">
-                    <div class="mt-4 text-center">
-                        <span class="text-2xl font-bold text-green-600">Stok Tersedia: {{ $book->stok_tersedia }}</span>
+                    <div class="mt-4">
+                        <span class="inline-flex items-center gap-x-1.5 rounded-md bg-green-100 px-3 py-2 text-lg font-bold text-green-700">
+                            <svg class="h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                            </svg>
+                            Stok Tersedia: {{ $book->stok_tersedia }}
+                        </span>
                     </div>
                 </div>
 
@@ -46,7 +51,7 @@
                             </div>
                             
                             {{-- Usulan Jadwal --}}
-                            <div>
+                            <div class="mb-4">
                                 <label for="usulan_jadwal" class="block text-sm font-medium text-gray-700">Usulan Jadwal Pengantaran (Opsional)</label>
                                 <input type="datetime-local" wire:model="usulan_jadwal" id="usulan_jadwal"
                                        class="border-gray-300 focus:border-purple-primary focus:ring-purple-primary rounded-md shadow-sm mt-1 block w-full">
