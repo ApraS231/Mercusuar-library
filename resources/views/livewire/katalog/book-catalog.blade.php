@@ -27,6 +27,9 @@
                             </div>
                         @endforeach
                     </div>
+                    <a href="{{ route('user.peminjaman') }}" class="inline-block mt-6 text-purple-primary hover:text-purple-hover font-semibold text-sm transition-colors">
+                        Lihat Semua Peminjaman &rarr;
+                    </a>
                 @else
                     <div class="text-center py-8 px-6 bg-white rounded-xl shadow-sm">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
