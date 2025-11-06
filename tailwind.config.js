@@ -15,7 +15,10 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                'light-purple': '#E6E6FA', // Lavender color
+                'purple-bg': '#F5F3FF',      // Latar belakang yang sangat terang
+                'purple-card': '#EDE9FE',    // Untuk kartu atau bagian
+                'purple-primary': '#8B5CF6', // Warna utama untuk tombol/tautan
+                'purple-hover': '#7C3AED',   // Warna saat di-hover
             },
         },
     },
