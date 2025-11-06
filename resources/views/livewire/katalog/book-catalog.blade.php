@@ -7,61 +7,66 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-12">
 
             {{-- My Loans Section --}}
-            <div class="mb-8 bg-purple-card p-6 rounded-lg shadow-lg">
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Buku Pinjaman Saya</h3>
+            <section class="bg-purple-card p-6 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Buku yang Sedang Dipinjam</h2>
                 @if ($myLoans->isNotEmpty())
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         @foreach ($myLoans as $loan)
-                            <div class="flex items-start space-x-4 p-4 bg-white rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300">
+                            <div class="flex items-start space-x-4 p-4 bg-white rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
                                 <img src="{{ $loan->book->gambar_cover ? asset('storage/' . $loan->book->gambar_cover) : 'https://placehold.co/80x120/e2e8f0/64748b?text=No+Image' }}"
                                      alt="Cover {{ $loan->book->judul }}"
-                                     class="w-16 h-24 object-cover rounded-md shadow-sm">
+                                     class="w-20 h-28 object-cover rounded-lg shadow-sm flex-shrink-0">
                                 <div class="flex-1">
-                                    <a href="{{ route('book.detail', $loan->book->id) }}" class="font-bold text-gray-800 hover:text-purple-primary transition-colors">{{ $loan->book->judul }}</a>
+                                    <a href="{{ route('book.detail', $loan->book->id) }}" class="font-bold text-gray-800 hover:text-purple-primary transition-colors line-clamp-2">{{ $loan->book->judul }}</a>
                                     <p class="text-sm text-gray-600 mt-1">Jatuh tempo:</p>
                                     <p class="text-sm font-semibold text-red-600">{{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d F Y') }}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
-                    <a href="{{ route('user.peminjaman') }}" class="inline-block mt-6 text-purple-primary hover:text-purple-hover font-semibold text-sm transition-colors">
-                        Lihat Semua Peminjaman &rarr;
-                    </a>
                 @else
-                    <div class="text-center py-4 px-6 bg-white rounded-lg shadow-sm">
-                        <p class="text-gray-600">Anda saat ini tidak memiliki buku yang sedang dipinjam.</p>
-                        <p class="text-sm text-gray-500 mt-1">Jelajahi katalog dan pinjam buku pertama Anda!</p>
+                    <div class="text-center py-8 px-6 bg-white rounded-xl shadow-sm">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-semibold text-gray-900">Belum Ada Pinjaman</h3>
+                        <p class="mt-1 text-sm text-gray-500">Jelajahi katalog di bawah dan pinjam buku pertama Anda!</p>
                     </div>
                 @endif
-            </div>
+            </section>
 
-            {{-- Search Bar --}}
-            <div class="relative mb-6">
-                <input 
-                    wire:model.live.debounce.300ms="search"
-                    type="text" 
-                    placeholder="Cari berdasarkan judul, penulis, atau kategori..."
-                    class="w-full rounded-full border-gray-300 shadow-sm focus:border-purple-primary focus:ring focus:ring-purple-primary focus:ring-opacity-50 pl-10 pr-4 py-2 transition-shadow">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                    </svg>
+            {{-- Book Catalog Section --}}
+            <section>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Katalog Buku</h2>
+                    {{-- Search Bar --}}
+                    <div class="relative w-1/3">
+                        <input
+                            wire:model.live.debounce.300ms="search"
+                            type="text"
+                            placeholder="Cari buku..."
+                            class="w-full rounded-full border-gray-300 shadow-sm focus:border-purple-primary focus:ring focus:ring-purple-primary focus:ring-opacity-50 pl-10 pr-4 py-2 transition-shadow">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div wire:loading wire:target="search" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <svg class="animate-spin h-5 w-5 text-purple-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
-                <div wire:loading wire:target="search" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <svg class="animate-spin h-5 w-5 text-purple-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </div>
-            </div>
 
-            {{-- Grid Daftar Buku & Loading State --}}
-            <div
-                wire:loading.class.delay="opacity-50"
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-opacity">
+                {{-- Grid Daftar Buku & Loading State --}}
+                <div
+                    wire:loading.class.delay="opacity-50"
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 transition-opacity">
                 @forelse ($books as $book)
                     <div class="bg-white shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl">
                         <a href="{{ route('book.detail', $book->id) }}" class="block">
