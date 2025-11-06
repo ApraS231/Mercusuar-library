@@ -48,9 +48,8 @@
                             {{-- Usulan Jadwal --}}
                             <div>
                                 <label for="usulan_jadwal" class="block text-sm font-medium text-gray-700">Usulan Jadwal Pengantaran (Opsional)</label>
-                                <input type="text" wire:model="usulan_jadwal" id="usulan_jadwal"
-                                       class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full"
-                                       placeholder="Contoh: Besok, jam 2 siang">
+                                <input type="datetime-local" wire:model="usulan_jadwal" id="usulan_jadwal"
+                                       class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
                                 <x-input-error :messages="$errors->get('usulan_jadwal')" class="mt-2" />
                             </div>
 
