@@ -87,14 +87,14 @@
                         <div class="p-4">
                             {{-- Kategori --}}
                             @if ($book->category)
-                                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full">
+                                <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold mb-2 px-2.5 py-0.5 rounded-full">
                                     {{ $book->category->nama_kategori }}
                                 </span>
                             @endif
 
                             {{-- Judul --}}
                             <h3 class="text-lg font-bold text-gray-900 truncate" title="{{ $book->judul }}">
-                                <a href="{{ route('book.detail', $book->id) }}" class="hover:text-indigo-600 transition-colors">
+                                <a href="{{ route('book.detail', $book->id) }}" class="hover:text-purple-primary transition-colors">
                                     {{ $book->judul }}
                                 </a>
                             </h3>
@@ -125,7 +125,7 @@
                             <button
                                 wire:click="$set('search', '')"
                                 type="button"
-                                class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                class="inline-flex items-center rounded-md bg-purple-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-primary">
                                 Hapus Pencarian
                             </button>
                         </div>

@@ -39,7 +39,7 @@
                             <div>
                                 <label for="alamat_pengantaran" class="block text-sm font-medium text-gray-700">Alamat Pengantaran</label>
                                 <textarea wire:model="alamat_pengantaran" id="alamat_pengantaran" rows="3"
-                                          class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full"
+                                          class="border-gray-300 focus:border-purple-primary focus:ring-purple-primary rounded-md shadow-sm mt-1 block w-full"
                                           placeholder="Masukkan alamat lengkap Anda..."></textarea>
                                 <x-input-error :messages="$errors->get('alamat_pengantaran')" class="mt-2" />
                                 <p class="text-xs text-gray-500 mt-1">Alamat ini diambil dari profil Anda. Anda bisa mengubahnya di sini khusus untuk peminjaman ini.</p>
@@ -49,14 +49,14 @@
                             <div>
                                 <label for="usulan_jadwal" class="block text-sm font-medium text-gray-700">Usulan Jadwal Pengantaran (Opsional)</label>
                                 <input type="datetime-local" wire:model="usulan_jadwal" id="usulan_jadwal"
-                                       class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                                       class="border-gray-300 focus:border-purple-primary focus:ring-purple-primary rounded-md shadow-sm mt-1 block w-full">
                                 <x-input-error :messages="$errors->get('usulan_jadwal')" class="mt-2" />
                             </div>
 
                             {{-- Tombol Submit --}}
                             <button type="submit" 
                                     wire:loading.attr="disabled"
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-colors duration-300">
+                                    class="w-full bg-purple-primary hover:bg-purple-hover text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-colors duration-300">
                                 <span wire:loading.remove wire:target="bookNow">Booking Buku Ini</span>
                                 <span wire:loading wire:target="bookNow">Memproses...</span>
                             </button>
@@ -122,12 +122,12 @@
                             <div>
                                 <label for="newReviewComment" class="block text-sm font-medium text-gray-700">Komentar (Opsional)</label>
                                 <textarea wire:model="newReviewComment" id="newReviewComment" rows="3"
-                                          class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full"
+                                          class="border-gray-300 focus:border-purple-primary focus:ring-purple-primary rounded-md shadow-sm mt-1 block w-full"
                                           placeholder="Bagaimana pendapat Anda tentang buku ini?"></textarea>
                                 <x-input-error :messages="$errors->get('newReviewComment')" class="mt-2" />
                             </div>
                             <button type="submit" wire:loading.attr="disabled"
-                                    class="mt-3 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+                                    class="mt-3 bg-purple-primary hover:bg-purple-hover text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
                                 Kirim Review
                             </button>
                         </form>
