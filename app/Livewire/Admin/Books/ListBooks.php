@@ -3,27 +3,34 @@
 namespace App\Livewire\Admin\Books;
 
 use App\Models\Book;
+use App\Models\Category; // TAMBAHAN: Import Model Category
 use Livewire\Component;
-use Livewire\WithPagination;      // Untuk paginasi
-use Livewire\WithFileUploads;    // Untuk upload gambar
-use Illuminate\Support\Facades\Storage; // Untuk menghapus file
+use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;     // Untuk validasi
+use Livewire\Attributes\Rule;
+use Illuminate\Database\QueryException; // TAMBAHAN: Untuk menangkap error database
 
-#[Layout('components.layouts.admin')] // Menggunakan layout admin
+#[Layout('components.layouts.admin')]
 class ListBooks extends Component
 {
     use WithPagination;
     use WithFileUploads;
 
-    // Properti untuk modal
+    // --- PROPERTI ---
     public $showModal = false;
-    public $bookId; // Untuk membedakan create/update
+    public $bookId; // Null = Create, Ada Isi = Edit
 
-    // Properti untuk form (rules validasi dari Roadmap)
+    // --- ATURAN VALIDASI (RULES) ---
+    
     #[Rule('required|string|max:255')]
     public $judul = '';
-    
+
+    // TAMBAHAN: Input untuk Kategori
+    #[Rule('required|exists:categories,id', as: 'kategori')] 
+    public $category_id = ''; 
+
     #[Rule('nullable|string|max:255')]
     public $penulis = '';
 
@@ -39,22 +46,33 @@ class ListBooks extends Component
     #[Rule('required|integer|min:0')]
     public $stok_total = 1;
 
-    #[Rule('nullable|image|max:2048')] // Validasi untuk upload (max 2MB)
+    #[Rule('nullable|image|max:2048')] 
     public $gambar_cover_baru;
 
     public $gambar_cover_lama;
 
     /**
-     * Helper untuk reset form
+     * Reset semua field form menjadi kosong
      */
     public function resetFields()
     {
-        $this->reset(['bookId', 'judul', 'penulis', 'penerbit', 'deskripsi', 'isbn', 'stok_total', 'gambar_cover_baru', 'gambar_cover_lama']);
-        $this->resetErrorBag(); // Menghapus pesan error
+        $this->reset([
+            'bookId', 
+            'judul', 
+            'category_id', // Reset kategori juga
+            'penulis', 
+            'penerbit', 
+            'deskripsi', 
+            'isbn', 
+            'stok_total', 
+            'gambar_cover_baru', 
+            'gambar_cover_lama'
+        ]);
+        $this->resetErrorBag();
     }
 
     /**
-     * Membuka modal untuk membuat buku baru
+     * Buka modal tambah buku
      */
     public function create()
     {
@@ -63,60 +81,7 @@ class ListBooks extends Component
     }
 
     /**
-     * Menutup modal
-     */
-    public function closeModal()
-    {
-        $this->showModal = false;
-        $this->resetFields();
-    }
-
-    /**
-     * Menyimpan data (baik baru atau update)
-     */
-    public function save()
-    {
-        // Validasi data
-        $this->validate();
-
-        $data = [
-            'judul' => $this->judul,
-            'penulis' => $this->penulis,
-            'penerbit' => $this->penerbit,
-            'deskripsi' => $this->deskripsi,
-            'isbn' => $this->isbn,
-            'stok_total' => $this->stok_total,
-        ];
-
-        // Cek apakah ini buku baru
-        $isNewBook = !$this->bookId;
-
-        // Handle File Upload
-        if ($this->gambar_cover_baru) {
-            // Hapus gambar lama jika ada (saat update)
-            if ($this->gambar_cover_lama) {
-                Storage::disk('public')->delete($this->gambar_cover_lama);
-            }
-            // Simpan gambar baru
-            $data['gambar_cover'] = $this->gambar_cover_baru->store('covers', 'public');
-        }
-
-        // Simpan ke database
-        $book = Book::updateOrCreate(['id' => $this->bookId], $data);
-
-        // Sesuai Roadmap: Set stok_tersedia = stok_total saat buku baru
-        if ($isNewBook) {
-            $book->stok_tersedia = $this->stok_total;
-            $book->save();
-        }
-
-        $this->closeModal();
-        session()->flash('success', $isNewBook ? 'Buku berhasil ditambahkan.' : 'Buku berhasil diperbarui.');
-        $this->dispatch('close-modal'); // Emit event jika diperlukan
-    }
-
-    /**
-     * Membuka modal untuk mengedit buku
+     * Buka modal edit buku
      */
     public function edit($id)
     {
@@ -124,6 +89,7 @@ class ListBooks extends Component
         
         $this->bookId = $id;
         $this->judul = $book->judul;
+        $this->category_id = $book->category_id; // Load kategori dari DB
         $this->penulis = $book->penulis;
         $this->penerbit = $book->penerbit;
         $this->deskripsi = $book->deskripsi;
@@ -135,30 +101,99 @@ class ListBooks extends Component
     }
 
     /**
-     * Menghapus buku
+     * Tutup modal
      */
-    public function delete($id)
+    public function closeModal()
     {
-        $book = Book::findOrFail($id);
-
-        // Hapus gambar dari storage jika ada
-        if ($book->gambar_cover) {
-            Storage::disk('public')->delete($book->gambar_cover);
-        }
-
-        $book->delete();
-        session()->flash('success', 'Buku berhasil dihapus.');
+        $this->showModal = false;
+        $this->resetFields();
     }
 
     /**
-     * Render view
+     * Simpan data (Create / Update)
+     */
+    public function save()
+    {
+        $this->validate();
+
+        $data = [
+            'judul' => $this->judul,
+            'category_id' => $this->category_id, // Simpan kategori
+            'penulis' => $this->penulis,
+            'penerbit' => $this->penerbit,
+            'deskripsi' => $this->deskripsi,
+            'isbn' => $this->isbn,
+            'stok_total' => $this->stok_total,
+        ];
+
+        $isNewBook = !$this->bookId;
+
+        // Handle Upload Gambar
+        if ($this->gambar_cover_baru) {
+            // Hapus gambar lama jika sedang edit dan gambar lama ada
+            if ($this->gambar_cover_lama) {
+                Storage::disk('public')->delete($this->gambar_cover_lama);
+            }
+            // Simpan gambar baru
+            $data['gambar_cover'] = $this->gambar_cover_baru->store('covers', 'public');
+        }
+
+        // Simpan ke Database
+        $book = Book::updateOrCreate(['id' => $this->bookId], $data);
+
+        // Logika Stok Awal: Jika buku baru, samakan stok tersedia dengan stok total
+        if ($isNewBook) {
+            $book->stok_tersedia = $this->stok_total;
+            $book->save();
+        }
+
+        $this->closeModal();
+        session()->flash('success', $isNewBook ? 'Buku berhasil ditambahkan.' : 'Buku berhasil diperbarui.');
+    }
+
+    /**
+     * Hapus buku dengan penanganan error relasi
+     */
+    public function delete($id)
+    {
+        try {
+            $book = Book::findOrFail($id);
+
+            // Cek dan hapus gambar fisik
+            if ($book->gambar_cover) {
+                Storage::disk('public')->delete($book->gambar_cover);
+            }
+
+            $book->delete();
+            session()->flash('success', 'Buku berhasil dihapus.');
+
+        } catch (QueryException $e) {
+            // Menangkap error jika buku masih dipinjam (Constraint Violation)
+            // Kode 23000 adalah kode standar SQL untuk Integrity Constraint Violation
+            if ($e->getCode() == "23000") {
+                session()->flash('error', 'GAGAL: Buku tidak dapat dihapus karena masih ada riwayat peminjaman/transaksi.');
+            } else {
+                session()->flash('error', 'Terjadi kesalahan sistem saat menghapus buku.');
+            }
+        }
+    }
+
+    /**
+     * Render View
      */
     public function render()
     {
-        $books = Book::latest()->paginate(10);
+        // Ambil data buku + kategorinya (Eager Loading)
+        $books = Book::with('category')
+                    ->latest()
+                    ->paginate(10);
         
+        // Ambil semua kategori untuk Dropdown di Modal
+        $categories = Category::all();
+
         return view('livewire.admin.books.list-books', [
-            'books' => $books
+            'books' => $books,
+            'categories' => $categories // Kirim variabel ini ke view
         ]);
     }
 }

@@ -11,7 +11,7 @@ class UpdateProfileInformationForm extends Component
 {
     public string $name = '';
     public string $email = '';
-    
+
     // --- DITAMBAHKAN ---
     public ?string $alamat = '';
     public ?string $no_telepon = '';
@@ -24,7 +24,7 @@ class UpdateProfileInformationForm extends Component
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
-        
+
         // --- DITAMBAHKAN ---
         $this->alamat = Auth::user()->alamat;
         $this->no_telepon = Auth::user()->no_telepon;
@@ -58,11 +58,10 @@ class UpdateProfileInformationForm extends Component
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(Auth::user())],
-            
-            // --- DITAMBAHKAN ---
             'alamat' => ['nullable', 'string', 'max:1000'],
-            'no_telepon' => ['nullable', 'string', 'max:20'],
-            // --- AKHIR TAMBAHAN ---
+
+            // PERBAIKAN: Pastikan Numeric dan minimal digit
+            'no_telepon' => ['nullable', 'numeric', 'digits_between:10,15'],
         ];
     }
 

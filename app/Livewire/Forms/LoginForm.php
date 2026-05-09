@@ -1,72 +1,93 @@
 <?php
 
-namespace App\Livewire\Forms;
+namespace App\Livewire\Auth;
 
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\Role;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Livewire\Attributes\Validate;
-use Livewire\Form;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Rule;
+use Livewire\Component;
 
-class LoginForm extends Form
+#[Layout('layouts.guest')] 
+class Login extends Component
 {
-    #[Validate('required|string|email')]
+    #[Rule('required|string|email')]
     public string $email = '';
 
-    #[Validate('required|string')]
+    #[Rule('required|string')]
     public string $password = '';
 
-    #[Validate('boolean')]
+    #[Rule('boolean')]
     public bool $remember = false;
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function authenticate(): void
     {
-        $this->ensureIsNotRateLimited();
+        $this->validate();
 
-        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
-
+        // PERBAIKAN 2: Logika Rate Limiter yang Benar
+        // Cek apakah user sudah terlalu banyak mencoba login (Limit 5x)
+        if (RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            $seconds = RateLimiter::availableIn($this->throttleKey());
+            
             throw ValidationException::withMessages([
-                'form.email' => trans('auth.failed'),
+                'email' => trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
-    }
+        // Coba Login
+        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+            
+            // JIKA GAGAL: Tambah hitungan gagal (+1)
+            RateLimiter::hit($this->throttleKey());
 
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
-    protected function ensureIsNotRateLimited(): void
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
         }
 
-        event(new Lockout(request()));
+        // JIKA BERHASIL: Baru bersihkan limit
+        RateLimiter::clear($this->throttleKey());
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'form.email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+        session()->regenerate();
+        
+        $this->redirect( 
+            session('url.intended', $this->redirectPath()),
+            navigate: true
+        );
     }
-
     /**
-     * Get the authentication rate limiting throttle key.
+     * Get the rate limiting throttle key for the request.
      */
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+    }
+
+    /**
+     * Render the component.
+     */
+    public function render(): \Illuminate\View\View
+    {
+        return view('livewire.auth.login');
+    }
+
+    /**
+     * Menyediakan path redirect berdasarkan role user.
+     */
+    protected function redirectPath(): string
+    {
+        $user = Auth::user();
+
+        if ($user->role === Role::Admin) {
+            return '/admin/dashboard';
+        }
+
+        return '/dashboard'; 
     }
 }

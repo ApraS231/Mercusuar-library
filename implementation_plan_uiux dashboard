@@ -1,0 +1,254 @@
+# Enterprise-Grade Dashboard UI/UX Refactoring
+
+Elevate the Airawata dashboard from its current "Claymorphism / earth-tone" aesthetic to an ultra-minimalist, enterprise-grade application following strict functional design principles.
+
+## Audit Summary — Current Issues
+
+| Problem | Where | Violation |
+|---|---|---|
+| Heavy claymorphism shadows (`clay-card`, `clay-btn`, `clay-input`) | `globals.css` L190-380 | Anti-AI cliché: heavy shadows, backdrop-blur, clay 3D |
+| Floating blob animations (`clay-float-1/2/3`, `clay-blob`) | `globals.css` L382-477 | Anti-AI cliché: floating 3D geometric blobs |
+| Earth-tone gradient backgrounds on cards | `highlight-card.tsx`, dashboards | Anti-AI cliché: complex gradients |
+| `2rem` border-radius on cards, `rounded-full` on inputs | Multiple components | Over-rounded corners (pill-shaped) |
+| Decorative serif heading font (Playfair Display) | `layout.tsx` | Not a geometric/neo-grotesque system font |
+| `shadow-earth-lg`, `shadow-earth-sm` utilities | `globals.css` | Forbidden heavy drop-shadows |
+| `backdrop-blur-md` on header | `header.tsx` | Glassmorphism |
+| Inconsistent spacing (mix of `p-5`, `p-6`, `p-8`, `gap-4`, `gap-6`, `gap-8`) | All components | No 8pt grid discipline |
+| Saturated rose/emerald/amber/indigo gradients on cards | Role dashboards | Not monochromatic/low-saturation |
+| `hover:scale-[1.02]`, `hover:-translate-y-1`, `transform` animations | Member/Peneliti dashboards | Dramatic scaling on hover |
+| `Playfair_Display` + `Plus_Jakarta_Sans` dual-font | Root layout | Serif heading doesn't match minimalist spec |
+
+---
+
+## Design Token System (New)
+
+### Color Palette — Strict Monochromatic
+
+```
+--background:       #FFFFFF    (Pure white)
+--surface:          #FAFAFA    (Off-white, for sidebar/cards)
+--foreground:       #111111    (Near-black, primary text)
+--text-secondary:   #6B7280    (gray-500, secondary text)
+--text-tertiary:    #9CA3AF    (gray-400, tertiary/placeholder)
+--border:           rgba(0,0,0,0.08)   (Ultra-subtle border)
+--border-strong:    rgba(0,0,0,0.12)   (Slightly more visible)
+--accent:           #4F46E5    (Indigo-600, single muted accent)
+--accent-light:     #EEF2FF    (Indigo-50, accent background)
+--destructive:      #DC2626    (Red-600, unchanged for semantics)
+--success:          #16A34A    (Green-600)
+--warning:          #D97706    (Amber-600)
+```
+
+### Typography — Inter (Neo-Grotesque)
+
+| Role | Size | Weight | Letter-spacing | Line-height |
+|---|---|---|---|---|
+| Page title (h1) | 24px (1.5rem) | 600 | -0.025em | 1.2 |
+| Section title (h2) | 18px (1.125rem) | 600 | -0.01em | 1.3 |
+| Widget title (h3) | 14px (0.875rem) | 600 | 0 | 1.4 |
+| Body | 14px (0.875rem) | 400 | 0 | 1.5 |
+| Small / Meta | 12px (0.75rem) | 500 | 0.01em | 1.5 |
+| Label / Overline | 11px (0.6875rem) | 600 | 0.05em | 1 |
+
+### Spacing — 8pt Grid
+
+All margins, paddings, gaps derive from multiples of 8px:
+`4px (0.25rem)` half-step for micro, `8px`, `16px`, `24px`, `32px`, `40px`, `48px`
+
+### Borders & Radii
+
+- Radius: `2px` (sharp) to `6px` (max)
+- Border: `1px solid rgba(0,0,0,0.08)`
+
+---
+
+## Proposed Changes
+
+### Phase 1: Design Foundation
+
+#### [MODIFY] [globals.css](file:///c:/laragon/www/Airawata/src/app/globals.css)
+
+1. **Purge all claymorphism** — Delete `.clay-card`, `.clay-btn`, `.clay-input`, `.clay-logo`, `.clay-toggle`, `.clay-icon`, `.clay-badge`, `.clay-divider`, `.clay-quote`, `.clay-blob`, `@keyframes clay-float-*`, `.clay-pulse`, `.shadow-earth*` utilities, `.bg-kawung`, `.divider-gunungan`, `.aksara-watermark`, `.bg-andesit`
+2. **Replace CSS custom properties** in `:root` with the new monochromatic token system
+3. **Remove** serif heading variable, replace with Inter/system stack
+4. **Add minimal utility classes**: focus-ring via `ring-offset`, subtle hover state
+
+#### [MODIFY] [layout.tsx](file:///c:/laragon/www/Airawata/src/app/layout.tsx)
+
+- Replace `Playfair_Display` + `Plus_Jakarta_Sans` with `Inter` from `next/font/google`
+- Remove `--font-heading` variable (single font system)
+- Clean up body className
+
+---
+
+### Phase 2: Dashboard Shell (Layout, Sidebar, Header)
+
+#### [MODIFY] [dashboard/layout.tsx](file:///c:/laragon/www/Airawata/src/app/dashboard/layout.tsx)
+
+- Replace outer `<div>` with semantic `<div>` (no extra wrappers)
+- Use `<main>` for content area (already present)
+- Align to 8pt grid: sidebar `256px` (32×8), content padding `32px`
+- Background: `#FFFFFF`
+
+#### [MODIFY] [sidebar.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/layout/sidebar.tsx)
+
+- Wrap in `<aside>` (already done ✓)
+- Replace `<nav>` section label `<p>` with semantic structure
+- Width: `256px` (from 280px, aligns to 8pt grid: 32×8)
+- Background: `#FAFAFA`, border-right: `1px solid rgba(0,0,0,0.08)`
+- Remove `shadow-[4px_0_24px...]` from aside
+- Nav item active: `bg-[#EEF2FF]` + `text-[#4F46E5]` (not full bg-primary fill)
+- Nav item hover: `bg-[rgba(0,0,0,0.04)]`
+- Border-radius on nav items: `4px` (from `rounded-xl`)
+- Brand logo: plain text with `font-semibold`, no `.font-serif-heading`
+- User profile avatar: `rounded-md` with `4px` radius, no `rounded-full`
+- Logout button: subtle, no destructive red on default
+
+#### [MODIFY] [header.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/layout/header.tsx)
+
+- Wrap in `<header>` (already done ✓)
+- Height: `64px` (8×8)
+- Remove `backdrop-blur-md`, `bg-white/80` → `bg-white` solid
+- border-bottom: `1px solid rgba(0,0,0,0.08)`
+- Greeting: plain `text-sm font-medium text-[#6B7280]`, remove 👋 emoji and `font-serif-heading`
+- Search input: `rounded-[4px]`, `border: 1px solid rgba(0,0,0,0.08)`, no `rounded-full`
+- Bell icon button: `rounded-[4px]`, hover background shift
+
+---
+
+### Phase 3: Dashboard UI Primitives
+
+#### [MODIFY] [highlight-card.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/ui/highlight-card.tsx)
+
+- Rename conceptually to "Metric Card" (file name kept for import compatibility)
+- Remove gradient background (`bg-gradient-to-br`, `gradientClass`)
+- Remove oversized background icon decoration
+- Remove `shadow-sm`, `rounded-2xl`
+- New styling: white background, `1px` border, `4px` radius
+- Left-aligned: icon (24×24 in subtle 40×40 container), title, value stacked
+- Value: `24px font-semibold text-foreground` (monochrome, not colored)
+- Description: `12px text-secondary`
+- Fixed height removed — content-driven sizing with `padding: 24px`
+
+#### [MODIFY] [dashboard-widget.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/ui/dashboard-widget.tsx)
+
+- White background, `4px` radius, `1px solid rgba(0,0,0,0.08)` border
+- Remove `shadow-sm`, `rounded-xl`
+- Padding: `24px`
+- Title: `14px font-semibold text-foreground` (was `text-primary` green)
+
+#### [MODIFY] [dashboard-skeleton.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/ui/dashboard-skeleton.tsx)
+
+- Align skeleton shapes to new grid and radii (`4px`, not `rounded-2xl`)
+
+#### [MODIFY] [table-search.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/ui/table-search.tsx)
+
+- Input: `rounded-[4px]`, subtle border, no custom width
+- Focus: `ring-2 ring-[#4F46E5]/20 ring-offset-1`
+
+---
+
+### Phase 4: Role-Specific Dashboards
+
+#### [MODIFY] [admin-dashboard.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/roles/admin-dashboard.tsx)
+
+- Replace `animate-in fade-in` with no entry animation (or max 150ms opacity)
+- Metric cards: remove `gradientClass`/`iconClass` color props → monochrome
+- Table section: `4px` radius, `1px` border, no `shadow-sm`
+- Table header: `bg-[#FAFAFA]`, `text-[11px] uppercase tracking-[0.05em] font-semibold text-[#6B7280]`
+- Tab nav: thin `2px` accent bottom-border for active, no thick underlines
+- Pending badge: `bg-[#FEF3C7] text-[#92400E]` (low-sat amber)
+- Timeline widget: simplify dots and lines, remove ring decoration
+
+#### [MODIFY] [peneliti-dashboard.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/roles/peneliti-dashboard.tsx)
+
+- "Buat Publikasi Baru" CTA: flat accent button `bg-[#4F46E5] text-white rounded-[4px]`, no gradient, no blur blob, no `hover:-translate-y-1`
+- Performance card: monochrome metric, no indigo gradient
+- Work list items: remove color-coded left bar, replace with small status dot
+- Status icons in small `32×32` containers, muted colors
+- "Lihat" button: `text-[#4F46E5] font-medium text-[12px]` — text-only, no background pill
+
+#### [MODIFY] [member-dashboard.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/roles/member-dashboard.tsx)
+
+- "Lanjutkan Belajar" hero: remove `rounded-[2rem]`, blur blob, gradient overlay → flat `bg-[#111111]` or `bg-accent` with sharp `4px` radius
+- Course cards: `4px` radius, `1px` border, no `rounded-2xl`, no `shadow-earth-sm`
+- Hover overlay on cards: remove `backdrop-blur`, use simple `opacity` background
+- VIP upsell card: remove rose gradient → flat with accent border, muted text
+- Calendar widget: simplify, `4px` radius on day cells
+- "Upgrade Sekarang" button: no `hover:scale-[1.02]` — use background shift only
+
+---
+
+### Phase 5: Management Pages (Data Tables)
+
+#### [MODIFY] [dashboard/users/page.tsx](file:///c:/laragon/www/Airawata/src/app/dashboard/users/page.tsx)
+
+- Page title: `24px font-semibold text-[#111111]`
+- Table container: `4px` radius, `1px` border, no `shadow`
+- Table header row: `bg-[#FAFAFA]`
+- Badges: `2px` radius, not `rounded-sm`
+
+#### [MODIFY] [dashboard/publications/page.tsx](file:///c:/laragon/www/Airawata/src/app/dashboard/publications/page.tsx)
+
+- Same table normalization as users page
+- Status badges: consistent low-saturation palette
+
+#### [MODIFY] [dashboard/articles/page.tsx](file:///c:/laragon/www/Airawata/src/app/dashboard/articles/page.tsx)
+
+- Same table normalization
+- "Tulis Baru" button: `bg-[#111111] text-white rounded-[4px]` (remove `rounded-md`)
+
+#### [MODIFY] [dashboard/transactions/page.tsx](file:///c:/laragon/www/Airawata/src/app/dashboard/transactions/page.tsx)
+
+- Same table normalization
+- Currency formatting remains unchanged
+
+#### [MODIFY] [dashboard/settings/page.tsx](file:///c:/laragon/www/Airawata/src/app/dashboard/settings/page.tsx)
+
+- Form container: `4px` radius, `1px` border
+- Remove serif heading
+
+---
+
+### Phase 6: Form Components
+
+#### [MODIFY] [settings-form.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/settings-form.tsx)
+
+- Remove all `clay-input`, `clay-btn` class references
+- Input styling: `rounded-[4px]`, standard `1px` border, `focus:ring-2 ring-accent/20`
+- Button: flat `bg-[#111111]` or `bg-accent`, `rounded-[4px]`, no pseudo-element shine
+
+#### [MODIFY] [role-request-form.tsx](file:///c:/laragon/www/Airawata/src/components/dashboard/role-request-form.tsx)
+
+- Same input/button normalization
+- Pending state icon: remove amber-50 decorative circle → simple inline icon + text
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Font Change**: Replacing `Playfair Display` (serif) + `Plus Jakarta Sans` with `Inter` across the entire app. This will affect the landing page and public-facing pages too, since the font is loaded in the root layout. If you prefer to keep the serif font for the landing page only, I can scope `Inter` to the dashboard layout specifically.
+
+> [!IMPORTANT]
+> **Color Palette Change**: The current earthy palette (Deep Canopy Green `#1A3C34`, Terracotta `#8C5E3C`, Aged Gold `#D4AF37`) will be replaced with a monochromatic system. This changes the brand identity. Confirm this is acceptable for the entire app, or should I scope the new palette to dashboard-only via CSS scoping?
+
+> [!WARNING]
+> **Landing Page Impact**: The `globals.css` cleanup will remove `.clay-*`, `.shadow-earth-*`, `.bg-kawung`, `.divider-gunungan`, `.aksara-watermark`, etc. If the landing page uses any of these, those sections will lose their styling. I'll verify usage before deleting, but please confirm the intent.
+
+## Open Questions
+
+1. **Scope of refactoring**: Should the new design system apply to the **entire** application (landing page, auth pages, public pages), or only the **dashboard** (`/dashboard/*`) routes?
+
+2. **Accent color preference**: I've proposed `Indigo-600 (#4F46E5)` as the single muted accent. Alternatives: `Slate-900 (#0F172A)` for full monochrome, or `Zinc-700 (#3F3F46)` for warmer neutral. Any preference?
+
+## Verification Plan
+
+### Automated Tests
+- `npm run build` — ensure zero TypeScript/compilation errors after refactoring
+- Visual inspection via browser tool on all dashboard routes: `/dashboard`, `/dashboard/users`, `/dashboard/publications`, `/dashboard/articles`, `/dashboard/transactions`, `/dashboard/settings`
+
+### Manual Verification
+- Check WCAG 2.1 AA contrast ratios for all text/background combinations
+- Verify 8pt grid alignment in browser dev tools
+- Test responsive behavior at mobile (< 1024px) breakpoint — sidebar sheet still functions

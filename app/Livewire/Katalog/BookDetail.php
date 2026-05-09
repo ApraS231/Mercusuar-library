@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\User;
+namespace App\Livewire\Katalog;
 
 use App\Models\Book;
 use App\Models\Peminjaman;
@@ -174,4 +174,3 @@ class BookDetail extends Component
         return view('livewire.katalog.book-detail');
     }
 }
-

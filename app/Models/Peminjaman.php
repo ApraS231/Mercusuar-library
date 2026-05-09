@@ -12,6 +12,13 @@ class Peminjaman extends Model
     use HasFactory;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'peminjamans';
+
+    /**
      * Mengizinkan mass assignment untuk semua atribut kecuali ID.
      */
     protected $guarded = ['id'];

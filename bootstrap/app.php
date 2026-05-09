@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // DAFTARKAN ALIAS ANDA DI SINI
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'status.check' => \App\Http\Middleware\CheckAccountStatus::class, // Daftarkan alias
         ]);
         
     })

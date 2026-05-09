@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Role;
+use App\Enums\StatusAkun;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,13 +14,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->id(); // [cite: 78]
+            $table->string('name'); // [cite: 79]
+            $table->string('email')->unique(); // [cite: 80]
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->string('password'); // [cite: 81]
+            $table->string('role')->default(Role::User->value); // [cite: 82]
+            $table->string('status_akun')->default(StatusAkun::Aktif->value); // [cite: 83]
+            $table->text('alamat')->nullable(); // [cite: 84]
+            $table->string('no_telepon')->nullable(); // [cite: 85]
+            $table->rememberToken(); // [cite: 86]
+            $table->timestamps(); // [cite: 86]
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
