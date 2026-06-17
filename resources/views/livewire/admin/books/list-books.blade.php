@@ -48,7 +48,7 @@
                         <tr class="hover:bg-[#FDF7FF] transition-colors group">
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <div class="h-20 w-14 rounded-lg overflow-hidden border border-[#E7E0EC] shadow-sm">
-                                    <img src="{{ $book->gambar_cover ? asset('storage/' . $book->gambar_cover) : 'https://placehold.co/56x80/E8DEF8/6750A4?text=IMG' }}" 
+                                    <img src="{{ $book->cover_url }}" 
                                          alt="Cover" class="w-full h-full object-cover">
                                 </div>
                             </td>
@@ -203,7 +203,7 @@
                                 @if ($gambar_cover_lama)
                                     <div class="text-center">
                                         <p class="text-xs text-[#49454F] mb-2">Saat Ini</p>
-                                        <img src="{{ asset('storage/' . $gambar_cover_lama) }}" class="h-32 rounded-lg shadow-md border border-white">
+                                        <img src="{{ str_starts_with($gambar_cover_lama, 'http') ? $gambar_cover_lama : asset('storage/' . $gambar_cover_lama) }}" class="h-32 rounded-lg shadow-md border border-white">
                                     </div>
                                 @endif
 

@@ -18,7 +18,7 @@
                 <div class="lg:col-span-5 bg-[#F3EDF7] p-8 lg:p-12 flex flex-col items-center justify-center relative">
                     <div class="relative w-4/5 mx-auto shadow-2xl rounded-lg rotate-[-2deg] hover:rotate-0 transition-all duration-500">
                         <img 
-                            src="{{ $book->gambar_cover ? asset('storage/' . $book->gambar_cover) : 'https://placehold.co/400x600/E8DEF8/6750A4?text=No+Cover' }}" 
+                            src="{{ $book->cover_url }}" 
                             alt="Cover" 
                             class="w-full h-auto rounded-lg"
                         >

@@ -100,13 +100,7 @@
                 @forelse ($books as $book)
                     @php
                         $isOutOfStock = $book->stok_tersedia <= 0;
-                        // Logika Gambar Aman
-                        $coverUrl = 'https://placehold.co/400x600/F3EDF7/6750A4?text=' . urlencode($book->judul);
-                        if ($book->gambar_cover) {
-                            $coverUrl = Str::startsWith($book->gambar_cover, ['http', 'https']) 
-                                ? $book->gambar_cover 
-                                : asset('storage/' . $book->gambar_cover);
-                        }
+                        $coverUrl = $book->cover_url;
                     @endphp
 
                     {{-- CARD ITEM --}}

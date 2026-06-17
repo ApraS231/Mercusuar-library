@@ -107,12 +107,7 @@
                         };
 
                         // URL Gambar Aman
-                        $coverUrl = 'https://placehold.co/400x600/F3EDF7/6750A4?text=' . urlencode($peminjaman->book->judul);
-                        if ($peminjaman->book->gambar_cover) {
-                            $coverUrl = Str::startsWith($peminjaman->book->gambar_cover, ['http', 'https']) 
-                                ? $peminjaman->book->gambar_cover 
-                                : asset('storage/' . $peminjaman->book->gambar_cover);
-                        }
+                        $coverUrl = $peminjaman->book->cover_url;
                     @endphp
 
                     {{-- CARD ITEM --}}

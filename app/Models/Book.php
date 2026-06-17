@@ -39,4 +39,21 @@ class Book extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * Accessor untuk URL Gambar Cover Buku.
+     * Mendukung URL eksternal (seeded) dan path local public storage.
+     */
+    public function getCoverUrlAttribute(): string
+    {
+        if (!$this->gambar_cover) {
+            return 'https://placehold.co/400x600/F3EDF7/6750A4?text=' . urlencode($this->judul ?? 'No Cover');
+        }
+
+        if (str_starts_with($this->gambar_cover, 'http://') || str_starts_with($this->gambar_cover, 'https://')) {
+            return $this->gambar_cover;
+        }
+
+        return asset('storage/' . $this->gambar_cover);
+    }
 }

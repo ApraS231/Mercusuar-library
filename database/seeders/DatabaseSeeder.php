@@ -19,6 +19,13 @@ class DatabaseSeeder extends Seeder
         // Hapus data lama (opsional, tapi bagus untuk development)
         User::query()->delete();
         Book::query()->delete();
+        \App\Models\Category::query()->delete();
+
+        // 0. BUAT DATA KATEGORI
+        $novel = \App\Models\Category::create(['nama_kategori' => 'Novel']);
+        $sains = \App\Models\Category::create(['nama_kategori' => 'Sains']);
+        $filsafat = \App\Models\Category::create(['nama_kategori' => 'Filsafat']);
+        $selfDev = \App\Models\Category::create(['nama_kategori' => 'Pengembangan Diri']);
 
         // 1. BUAT USER ADMIN
         User::create([
@@ -66,6 +73,7 @@ class DatabaseSeeder extends Seeder
         // 3. BUAT DATA BUKU
         Book::create([
             'judul' => 'Laskar Pelangi',
+            'category_id' => $novel->id,
             'penulis' => 'Andrea Hirata',
             'penerbit' => 'Bentang Pustaka',
             'deskripsi' => 'Novel yang menceritakan kehidupan 10 anak dari keluarga miskin yang bersekolah (SD dan SMP) di sebuah sekolah Muhammadiyah di Belitung yang penuh dengan keterbatasan.',
@@ -76,6 +84,7 @@ class DatabaseSeeder extends Seeder
 
         Book::create([
             'judul' => 'Bumi Manusia',
+            'category_id' => $novel->id,
             'penulis' => 'Pramoedya Ananta Toer',
             'penerbit' => 'Hasta Mitra',
             'deskripsi' => 'Salah satu novel dalam tetralogi Pulau Buru. Menceritakan kisah Minke, seorang pemuda pribumi di era kolonial Belanda.',
@@ -86,6 +95,7 @@ class DatabaseSeeder extends Seeder
 
         Book::create([
             'judul' => 'Filosofi Teras',
+            'category_id' => $filsafat->id,
             'penulis' => 'Henry Manampiring',
             'penerbit' => 'Kompas Gramedia',
             'deskripsi' => 'Sebuah buku pengantar filsafat Stoa yang relevan dengan kehidupan masa kini, untuk hidup lebih tenang dan mengurangi emosi negatif.',
@@ -96,6 +106,7 @@ class DatabaseSeeder extends Seeder
 
         Book::create([
             'judul' => 'Atomic Habits',
+            'category_id' => $selfDev->id,
             'penulis' => 'James Clear',
             'penerbit' => 'Penguin Random House',
             'deskripsi' => 'Cara mudah dan teruji untuk membangun kebiasaan baik dan menghilangkan kebiasaan buruk.',
@@ -106,9 +117,10 @@ class DatabaseSeeder extends Seeder
 
         Book::create([
             'judul' => 'Sapiens: Riwayat Singkat Umat Manusia',
+            'category_id' => $sains->id,
             'penulis' => 'Yuval Noah Harari',
             'penerbit' => 'Harper',
-            'deskripsi' => 'Buku ini melacak evolusi umat manusia dari zaman batu hingga saat ini.',
+            'deskripsi' => 'Buku ini melacak umat manusia dari zaman batu hingga saat ini.',
             'stok_total' => 4,
             'stok_tersedia' => 4,
             'gambar_cover' => 'https://placehold.co/400x600/EBF5FF/7F92B0?text=Sapiens'

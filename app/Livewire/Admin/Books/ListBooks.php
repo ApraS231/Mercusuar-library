@@ -9,7 +9,6 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;
 use Illuminate\Database\QueryException; // TAMBAHAN: Untuk menangkap error database
 
 #[Layout('components.layouts.admin')]
@@ -22,34 +21,40 @@ class ListBooks extends Component
     public $showModal = false;
     public $bookId; // Null = Create, Ada Isi = Edit
 
-    // --- ATURAN VALIDASI (RULES) ---
-    
-    #[Rule('required|string|max:255')]
     public $judul = '';
-
-    // TAMBAHAN: Input untuk Kategori
-    #[Rule('required|exists:categories,id', as: 'kategori')] 
     public $category_id = ''; 
-
-    #[Rule('nullable|string|max:255')]
     public $penulis = '';
-
-    #[Rule('nullable|string|max:255')]
     public $penerbit = '';
-    
-    #[Rule('nullable|string')]
     public $deskripsi = '';
-
-    #[Rule('nullable|string|max:25|unique:books,isbn')]
     public $isbn = '';
-
-    #[Rule('required|integer|min:0')]
     public $stok_total = 1;
-
-    #[Rule('nullable|image|max:2048')] 
     public $gambar_cover_baru;
-
     public $gambar_cover_lama;
+
+    /**
+     * Aturan validasi dinamis
+     */
+    public function rules()
+    {
+        return [
+            'judul' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'penulis' => 'nullable|string|max:255',
+            'penerbit' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'isbn' => 'nullable|string|max:25|unique:books,isbn,' . $this->bookId,
+            'stok_total' => 'required|integer|min:0',
+            'gambar_cover_baru' => 'nullable|image|max:2048',
+        ];
+    }
+
+    /**
+     * Nama atribut untuk pesan error
+     */
+    protected $validationAttributes = [
+        'category_id' => 'kategori',
+        'gambar_cover_baru' => 'gambar cover baru',
+    ];
 
     /**
      * Reset semua field form menjadi kosong
@@ -130,8 +135,8 @@ class ListBooks extends Component
 
         // Handle Upload Gambar
         if ($this->gambar_cover_baru) {
-            // Hapus gambar lama jika sedang edit dan gambar lama ada
-            if ($this->gambar_cover_lama) {
+            // Hapus gambar lama jika sedang edit, gambar lama ada, dan bukan URL eksternal
+            if ($this->gambar_cover_lama && !str_starts_with($this->gambar_cover_lama, 'http://') && !str_starts_with($this->gambar_cover_lama, 'https://')) {
                 Storage::disk('public')->delete($this->gambar_cover_lama);
             }
             // Simpan gambar baru
@@ -159,8 +164,8 @@ class ListBooks extends Component
         try {
             $book = Book::findOrFail($id);
 
-            // Cek dan hapus gambar fisik
-            if ($book->gambar_cover) {
+            // Cek dan hapus gambar fisik (bukan URL eksternal)
+            if ($book->gambar_cover && !str_starts_with($book->gambar_cover, 'http://') && !str_starts_with($book->gambar_cover, 'https://')) {
                 Storage::disk('public')->delete($book->gambar_cover);
             }
 
