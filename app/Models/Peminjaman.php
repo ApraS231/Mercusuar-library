@@ -25,19 +25,16 @@ class Peminjaman extends Model
 
     /**
      * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'status' => StatusPeminjaman::class, //
-            'jadwal_pengantaran_usulan' => 'datetime', //
-            'jadwal_pengantaran_disetujui' => 'datetime', //
-            'tgl_booking' => 'datetime', //
-            'tgl_diterima' => 'datetime', //
-            'tgl_jatuh_tempo' => 'date', //
-            'tgl_dikembalikan' => 'datetime', //
+            'status' => StatusPeminjaman::class,
+            'tgl_booking' => 'datetime',
+            'tgl_disetujui' => 'datetime',
+            'tgl_jatuh_tempo' => 'date',
+            'tgl_selesai' => 'datetime',
         ];
     }
 

@@ -17,14 +17,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('book_id')->constrained('books')->onDelete('restrict');
             
-            $table->string('status')->default(StatusPeminjaman::Pending->value); 
-            $table->text('alamat_pengantaran'); 
-            $table->dateTime('jadwal_pengantaran_usulan')->nullable();
-            $table->dateTime('jadwal_pengantaran_disetujui')->nullable();
+            $table->string('status')->default(StatusPeminjaman::Pinjam->value); 
             $table->dateTime('tgl_booking');
-            $table->dateTime('tgl_diterima')->nullable();
+            $table->dateTime('tgl_disetujui')->nullable();
             $table->date('tgl_jatuh_tempo')->nullable();
-            $table->dateTime('tgl_dikembalikan')->nullable();
+            $table->dateTime('tgl_selesai')->nullable();
             
             $table->timestamps();
         });

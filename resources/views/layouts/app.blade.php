@@ -54,6 +54,8 @@
                             <a href="{{ route('user.peminjaman') }}" class="hover:text-[#6750A4] transition-colors {{ request()->routeIs('user.peminjaman') ? 'text-[#6750A4] font-bold' : '' }}">Peminjaman Saya</a>
                             @if(auth()->user()->role === \App\Enums\Role::Admin)
                                 <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-[#1D1B20] text-white rounded-full hover:bg-[#6750A4] transition-colors shadow-md">Admin Panel</a>
+                            @elseif(auth()->user()->role === \App\Enums\Role::KepalaPerpus)
+                                <a href="{{ route('kepala-perpus.dashboard') }}" class="px-4 py-2 bg-[#6750A4] text-white rounded-full hover:bg-[#5F4999] transition-colors shadow-md">Laporan Panel</a>
                             @endif
                         </div>
 

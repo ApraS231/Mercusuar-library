@@ -31,7 +31,18 @@ class DatabaseSeeder extends Seeder
             'no_telepon' => '081234567890',
         ]);
 
-        // 2. BUAT USER BIASA
+        // 2. BUAT USER KEPALA PERPUSTAKAAN
+        User::create([
+            'name' => 'Kepala Perpustakaan',
+            'email' => 'kepala@mercusuar.com',
+            'password' => Hash::make('password'),
+            'role' => Role::KepalaPerpus,
+            'status_akun' => StatusAkun::Aktif,
+            'alamat' => 'Jl. Pustaka No. 50, Jakarta',
+            'no_telepon' => '089876543210',
+        ]);
+
+        // 3. BUAT USER BIASA
         User::create([
             'name' => 'Anggota Biasa (Andi)',
             'email' => 'andi@gmail.com',

@@ -21,7 +21,7 @@ class CheckOverdueLoans extends Command
     /**
      * Deskripsi command.
      */
-    protected $description = 'Cari peminjaman yang sudah diterima dan melewati tanggal jatuh tempo, lalu tandai sebagai Overdue dan batasi akun user.';
+    protected $description = 'Cari peminjaman yang sudah disetujui dan melewati tanggal jatuh tempo, lalu tandai sebagai Overdue dan batasi akun user.';
 
     /**
      * Logika utama command.
@@ -31,9 +31,9 @@ class CheckOverdueLoans extends Command
         $this->info('Memulai pengecekan peminjaman overdue...');
 
         // 1. Ambil semua peminjaman yang:
-        //    - Statusnya "Diterima"
+        //    - Statusnya "Disetujui"
         //    - Tanggal jatuh temponya SUDAH LEWAT (kurang dari hari ini)
-        $overdueLoans = Peminjaman::where('status', StatusPeminjaman::Diterima)
+        $overdueLoans = Peminjaman::where('status', StatusPeminjaman::Disetujui)
                                 ->where('tgl_jatuh_tempo', '<', Carbon::now()->toDateString())
                                 ->get();
 

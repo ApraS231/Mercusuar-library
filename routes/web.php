@@ -54,9 +54,9 @@ Route::get('/book/{book}', BookDetail::class)
 
 // === RUTE ADMIN ===
 // Didasarkan pada BAGIAN 1 dari Roadmap
-// Semua rute di sini memerlukan login DAN middleware 'admin'
+// Semua rute di sini memerlukan login DAN middleware 'role:admin'
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // Langkah 1: Dashboard Admin
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
@@ -69,6 +69,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Langkah 4: Manajemen User
     Route::get('/users', AdminListUsers::class)->name('users.index');
+});
+
+// === RUTE KEPALA PERPUSTAKAAN ===
+Route::middleware(['auth', 'role:kepala_perpus'])->prefix('kepala-perpus')->name('kepala-perpus.')->group(function () {
+    Route::get('/dashboard', \App\Livewire\KepalaPerpus\Dashboard::class)->name('dashboard');
+    Route::get('/laporan-peminjaman', \App\Livewire\KepalaPerpus\LaporanPeminjaman::class)->name('laporan');
+    Route::get('/users', \App\Livewire\KepalaPerpus\ListUsers::class)->name('users');
 });
 
 

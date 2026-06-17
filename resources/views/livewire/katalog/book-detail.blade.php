@@ -1,23 +1,5 @@
 <div class="min-h-screen bg-[#FDF7FF] text-[#1D1B20] font-sans pb-12">
     
-    {{-- Tambahkan Library Flatpickr (Date Picker Mewah) --}}
-    @assets
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <style>
-        /* Custom CSS untuk mengubah warna Flatpickr jadi Ungu MD3 */
-        .flatpickr-calendar { border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: none; }
-        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
-            background: #6750A4 !important;
-            border-color: #6750A4 !important;
-        }
-        .flatpickr-months .flatpickr-month { background: #F3EDF7; color: #1D1B20; fill: #1D1B20; border-radius: 16px 16px 0 0; padding-top: 10px; }
-        .flatpickr-current-month .flatpickr-monthDropdown-months { font-weight: 500; }
-        .flatpickr-weekdays { background: #F3EDF7; }
-        span.flatpickr-weekday { color: #49454F; font-weight: 600; }
-        .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus { background: #E8DEF8; }
-    </style>
-    @endassets
 
     {{-- Breadcrumb --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -88,49 +70,6 @@
 
                         @if ($book->stok_tersedia > 0)
                             <form wire:submit="bookNow" class="space-y-5">
-                                {{-- Alamat --}}
-                                <div class="relative">
-                                    <textarea wire:model="alamat_pengantaran" rows="2" 
-                                        class="block px-4 pb-2.5 pt-5 w-full text-sm text-[#1D1B20] bg-white border border-[#79747E] rounded-2xl appearance-none focus:outline-none focus:ring-2 focus:ring-[#6750A4] focus:border-transparent peer transition-all"
-                                        placeholder=" "></textarea>
-                                    <label class="absolute text-sm text-[#49454F] duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-[#6750A4] bg-white px-1">
-                                        Alamat Pengantaran
-                                    </label>
-                                </div>
-                                @error('alamat_pengantaran') <span class="text-xs text-[#B3261E] ml-4">{{ $message }}</span> @enderror
-
-                                {{-- Jadwal (FLATPICKR IMPLEMENTATION) --}}
-                                <div class="relative" 
-                                     x-data="{ 
-                                        init() {
-                                            flatpickr(this.$refs.picker, {
-                                                enableTime: true,
-                                                dateFormat: 'Y-m-d H:i',
-                                                minDate: 'today',
-                                                time_24hr: true,
-                                                disableMobile: true, // Paksa tampilan Flatpickr di Mobile juga agar mewah
-                                                onChange: (selectedDates, dateStr, instance) => {
-                                                    @this.set('usulan_jadwal', dateStr);
-                                                }
-                                            });
-                                        }
-                                     }"
-                                     wire:ignore> {{-- wire:ignore penting agar Livewire tidak me-reset elemen ini --}}
-                                    
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-20">
-                                        <svg class="w-5 h-5 text-[#6750A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    </div>
-                                    
-                                    <input type="text" x-ref="picker" wire:model="usulan_jadwal"
-                                        class="block px-4 pb-2.5 pt-5 pl-12 w-full text-sm text-[#1D1B20] bg-white border border-[#79747E] rounded-2xl appearance-none focus:outline-none focus:ring-2 focus:ring-[#6750A4] focus:border-transparent peer transition-all cursor-pointer"
-                                        placeholder=" ">
-                                    
-                                    <label class="absolute text-sm text-[#49454F] duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-12 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-[#6750A4] bg-white px-1 pointer-events-none">
-                                        Usulan Jadwal (Opsional)
-                                    </label>
-                                </div>
-                                @error('usulan_jadwal') <span class="text-xs text-[#B3261E] ml-4">{{ $message }}</span> @enderror
-
                                 <button type="submit" 
                                     class="w-full bg-[#6750A4] hover:bg-[#5F4999] text-white font-medium rounded-full py-3.5 shadow-sm hover:shadow-md transition-all duration-300 flex justify-center items-center gap-2">
                                     <span wire:loading.remove wire:target="bookNow">Konfirmasi Peminjaman</span>

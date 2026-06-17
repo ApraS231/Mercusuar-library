@@ -16,10 +16,6 @@ class BookDetail extends Component
 {
     public Book $book;
     
-    // Properti untuk Form Booking
-    public string $alamat_pengantaran = '';
-    public ?string $usulan_jadwal = ''; // Dibuat nullable
-
     // Properti untuk Form Review
     public int $newReviewRating = 5;
     public string $newReviewComment = '';
@@ -31,11 +27,6 @@ class BookDetail extends Component
     {
         $this->book = $book->load('reviews.user');
         
-        // Ambil alamat default user
-        if (auth()->user()->alamat) {
-            $this->alamat_pengantaran = auth()->user()->alamat;
-        }
-
         // Cek riwayat peminjaman untuk mengizinkan review
         $this->cekRiwayatReview();
     }
@@ -47,13 +38,7 @@ class BookDetail extends Component
     {
         $user = auth()->user();
 
-        // ---- VALIDASI ATURAN (Sesuai Perencanaan 4.1) ----
-
-        // Validasi Form
-        $this->validate([
-            'alamat_pengantaran' => 'required|string|min:10|max:1000',
-            'usulan_jadwal' => 'nullable|string|max:100',
-        ]);
+        // ---- VALIDASI ATURAN ----
 
         // Cek 1: Stok Tersedia (meskipun di UI sudah, double check di backend)
         if ($this->book->stok_tersedia <= 0) {
@@ -67,24 +52,22 @@ class BookDetail extends Component
             return;
         }
 
-        // Cek 3: Batas Peminjaman Aktif (Status 'Diterima') < 3
+        // Cek 3: Batas Peminjaman Aktif (Status 'Disetujui' atau 'Pinjam') < 3
+        // Disetujui berarti buku sedang dipinjam oleh user di tangan mereka. Pinjam berarti menunggu approval.
         $pinjamanAktif = Peminjaman::where('user_id', $user->id)
-                            ->where('status', StatusPeminjaman::Diterima)
+                            ->whereIn('status', [StatusPeminjaman::Pinjam, StatusPeminjaman::Disetujui])
                             ->count();
         if ($pinjamanAktif >= 3) {
-            session()->flash('error', 'Anda telah mencapai batas maksimum 3 buku yang sedang dipinjam (status "Diterima").');
+            session()->flash('error', 'Anda telah mencapai batas maksimum 3 buku yang sedang dipinjam (status "Pinjam" / "Disetujui").');
             return;
         }
 
-        // Cek 4 (Tambahan): User sudah me-request buku ini (status Pending/Disetujui, dll)
+        // Cek 4: User sudah me-request buku ini (status Pinjam / Disetujui)
         $sudahRequest = Peminjaman::where('user_id', $user->id)
                             ->where('book_id', $this->book->id)
                             ->whereIn('status', [
-                                StatusPeminjaman::Pending, 
-                                StatusPeminjaman::Disetujui, 
-                                StatusPeminjaman::Diproses, 
-                                StatusPeminjaman::Diantar, 
-                                StatusPeminjaman::Diterima
+                                StatusPeminjaman::Pinjam, 
+                                StatusPeminjaman::Disetujui
                             ])->exists();
         if ($sudahRequest) {
             session()->flash('error', 'Anda sudah meminjam atau sedang dalam proses peminjaman buku ini.');
@@ -102,15 +85,13 @@ class BookDetail extends Component
                 Peminjaman::create([
                     'user_id' => $user->id,
                     'book_id' => $this->book->id,
-                    'status' => StatusPeminjaman::Pending,
-                    'alamat_pengantaran' => $this->alamat_pengantaran,
-                    'jadwal_pengantaran_usulan' => $this->usulan_jadwal, // Simpan usulan jadwal
+                    'status' => StatusPeminjaman::Pinjam,
                     'tgl_booking' => now(),
                 ]);
             });
 
             // 3. Berhasil
-            session()->flash('success', 'Buku berhasil di-booking! Admin akan segera memproses permintaan Anda.');
+            session()->flash('success', 'Buku berhasil dipinjam! Silakan ambil di perpustakaan setelah disetujui.');
             return $this->redirect(route('user.peminjaman'));
 
         } catch (\Exception $e) {
@@ -132,7 +113,7 @@ class BookDetail extends Component
         // Pastikan user pernah pinjam dan belum review
         $this->cekRiwayatReview();
         if (!$this->sudahPernahPinjam || $this->sudahReview) {
-            session()->flash('error-review', 'Anda hanya bisa memberi review satu kali setelah peminjaman dikembalikan.');
+            session()->flash('error-review', 'Anda hanya bisa memberi review satu kali setelah peminjaman diselesaikan.');
             return;
         }
 
@@ -157,10 +138,10 @@ class BookDetail extends Component
     {
         $userId = auth()->id();
         
-        // Cek apakah user pernah mengembalikan buku ini
+        // Cek apakah user pernah mengembalikan (Selesai) buku ini
         $this->sudahPernahPinjam = Peminjaman::where('user_id', $userId)
                                     ->where('book_id', $this->book->id)
-                                    ->where('status', StatusPeminjaman::Dikembalikan)
+                                    ->where('status', StatusPeminjaman::Selesai)
                                     ->exists();
         
         // Cek apakah user sudah pernah memberi review untuk buku ini

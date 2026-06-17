@@ -64,9 +64,6 @@
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <div class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->user->name ?? 'User Dihapus' }}</div>
                                 <div class="text-xs text-[#49454F]">{{ $peminjaman->user->email ?? '-' }}</div>
-                                <div class="text-[10px] text-[#49454F]/70 mt-1 max-w-[150px] truncate" title="{{ $peminjaman->alamat_pengantaran }}">
-                                    {{ $peminjaman->alamat_pengantaran }}
-                                </div>
                             </td>
 
                             {{-- Kolom Tanggal --}}
@@ -84,10 +81,9 @@
                                 @php
                                     $statusEnum = $peminjaman->status;
                                     $badgeClass = match($statusEnum) {
-                                        \App\Enums\StatusPeminjaman::Pending => 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2]',
+                                        \App\Enums\StatusPeminjaman::Pinjam => 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2]',
                                         \App\Enums\StatusPeminjaman::Disetujui => 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB]',
-                                        \App\Enums\StatusPeminjaman::Diantar => 'bg-[#E0F7FA] text-[#006064] border-[#B2EBF2]',
-                                        \App\Enums\StatusPeminjaman::Diterima => 'bg-[#E6F4EA] text-[#137333] border-[#C3EED4]',
+                                        \App\Enums\StatusPeminjaman::Selesai => 'bg-[#E6F4EA] text-[#137333] border-[#C3EED4]',
                                         \App\Enums\StatusPeminjaman::Overdue => 'bg-[#F9DEDC] text-[#B3261E] border-[#F2B8B5] font-bold',
                                         default => 'bg-[#F5F5F5] text-[#616161] border-[#E0E0E0]',
                                     };
@@ -101,7 +97,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium align-top">
                                 <div class="flex justify-end gap-2">
                                     
-                                    @if ($statusEnum === \App\Enums\StatusPeminjaman::Pending)
+                                    @if ($statusEnum === \App\Enums\StatusPeminjaman::Pinjam)
                                         <button wire:click="approve({{ $peminjaman->id }})" class="p-2 bg-[#E6F4EA] text-[#137333] rounded-full hover:bg-[#C3EED4] transition-colors" title="Setujui">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </button>
@@ -109,24 +105,12 @@
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     
-                                    @elseif ($statusEnum === \App\Enums\StatusPeminjaman::Disetujui)
-                                        <button wire:click="markAsDelivered({{ $peminjaman->id }})" class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#E3F2FD] text-[#1565C0] rounded-full hover:bg-[#BBDEFB] transition-colors text-xs font-bold" title="Tandai Diantar">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                            Kirim
-                                        </button>
-                                    
-                                    @elseif ($statusEnum === \App\Enums\StatusPeminjaman::Diantar)
-                                        <span class="text-xs text-[#49454F] italic flex items-center gap-1">
-                                            <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            Menunggu User
-                                        </span>
-                                    
-                                    @elseif ($statusEnum === \App\Enums\StatusPeminjaman::Diterima || $statusEnum === \App\Enums\StatusPeminjaman::Overdue)
-                                        <button wire:click="confirmReturn({{ $peminjaman->id }})" 
-                                                wire:confirm="Buku dikembalikan? Stok akan ditambah."
+                                    @elseif ($statusEnum === \App\Enums\StatusPeminjaman::Disetujui || $statusEnum === \App\Enums\StatusPeminjaman::Overdue)
+                                        <button wire:click="markAsDone({{ $peminjaman->id }})" 
+                                                wire:confirm="Selesaikan peminjaman ini? Buku akan ditandai kembali dan stok diperbarui."
                                                 class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#6750A4] text-white rounded-full hover:bg-[#5F4999] transition-colors text-xs font-bold shadow-md hover:shadow-lg">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                            Konfirmasi Kembali
+                                            Selesaikan
                                         </button>
                                     
                                     @else

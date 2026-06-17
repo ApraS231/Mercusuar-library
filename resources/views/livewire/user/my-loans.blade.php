@@ -4,11 +4,11 @@
         <title>Riwayat Peminjaman | Mercusuar Library</title>
     @endpush
 
-    {{-- Assets (Fonts & GSAP) --}}
+    {{-- Fonts --}}
     @assets
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    @endassets
+
     <style>
         .font-serif-display { font-family: 'Playfair Display', serif; }
         .font-sans-text { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -16,15 +16,33 @@
             background-image: radial-gradient(#E7E0EC 1px, transparent 1px);
             background-size: 24px 24px;
         }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animation-delay-0 { animation-delay: 0ms; }
+        .animation-delay-100 { animation-delay: 100ms; }
+        .animation-delay-200 { animation-delay: 200ms; }
+        .animation-delay-300 { animation-delay: 300ms; }
+        .animation-delay-400 { animation-delay: 400ms; }
     </style>
-    @endassets
 
     <div class="min-h-screen bg-[#FDF7FF] font-sans-text text-[#1D1B20] pb-24 relative">
         
         {{-- HEADER SECTION --}}
         <div class="relative pt-28 pb-12 px-6 md:px-8 bg-dots-pattern border-b border-[#E7E0EC]/60">
             <div class="max-w-5xl mx-auto">
-                <div class="gsap-header opacity-0 translate-y-5">
+                <div class="animate-fade-in-up">
                     <span class="inline-block py-1 px-3 rounded-full bg-white border border-[#E7E0EC] text-[10px] font-bold uppercase tracking-[0.15em] text-[#6750A4] mb-4 shadow-sm">
                         Dashboard Anggota
                     </span>
@@ -43,7 +61,7 @@
             
             {{-- Notifikasi --}}
             @if (session('success'))
-                <div class="gsap-fade-up opacity-0 bg-[#E6F4EA] border border-[#C3EED4] text-[#146C2E] p-4 rounded-2xl flex items-center gap-3 shadow-sm mb-8">
+                <div class="animate-fade-in-up bg-[#E6F4EA] border border-[#C3EED4] text-[#146C2E] p-4 rounded-2xl flex items-center gap-3 shadow-sm mb-8">
                     <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     </div>
@@ -52,13 +70,27 @@
             @endif
 
             @if (session('error'))
-                <div class="gsap-fade-up opacity-0 bg-[#F9DEDC] border border-[#F2B8B5] text-[#B3261E] p-4 rounded-2xl flex items-center gap-3 shadow-sm mb-8">
+                <div class="animate-fade-in-up bg-[#F9DEDC] border border-[#F2B8B5] text-[#B3261E] p-4 rounded-2xl flex items-center gap-3 shadow-sm mb-8">
                     <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     </div>
                     <span class="font-medium text-sm">{{ session('error') }}</span>
                 </div>
             @endif
+
+            {{-- Tab Switcher --}}
+            <div class="flex border-b border-[#E7E0EC] mb-6">
+                <button wire:click="setTab('aktif')" 
+                    class="px-6 py-3 font-medium text-sm border-b-2 transition-all duration-200 
+                           {{ $activeTab === 'aktif' ? 'border-[#6750A4] text-[#6750A4]' : 'border-transparent text-[#49454F] hover:text-[#1D1B20]' }}">
+                    Pinjaman Aktif
+                </button>
+                <button wire:click="setTab('riwayat')" 
+                    class="px-6 py-3 font-medium text-sm border-b-2 transition-all duration-200 
+                           {{ $activeTab === 'riwayat' ? 'border-[#6750A4] text-[#6750A4]' : 'border-transparent text-[#49454F] hover:text-[#1D1B20]' }}">
+                    Riwayat Pinjaman
+                </button>
+            </div>
 
             {{-- LIST CARD --}}
             <div id="loans-list">
@@ -67,13 +99,11 @@
                         // Logika Warna & Teks Status
                         $status = $peminjaman->status;
                         $statusConfig = match($status) {
-                            \App\Enums\StatusPeminjaman::Pending => ['bg' => 'bg-[#FFF8E1]', 'text' => 'text-[#F57C00]', 'border' => 'border-[#FFE0B2]', 'label' => 'Menunggu Konfirmasi'],
-                            \App\Enums\StatusPeminjaman::Disetujui, \App\Enums\StatusPeminjaman::Diproses => ['bg' => 'bg-[#E3F2FD]', 'text' => 'text-[#1565C0]', 'border' => 'border-[#BBDEFB]', 'label' => 'Sedang Diproses'],
-                            \App\Enums\StatusPeminjaman::Diantar => ['bg' => 'bg-[#E0F7FA]', 'text' => 'text-[#006064]', 'border' => 'border-[#B2EBF2]', 'label' => 'Sedang Diantar'],
-                            \App\Enums\StatusPeminjaman::Diterima => ['bg' => 'bg-[#E6F4EA]', 'text' => 'text-[#137333]', 'border' => 'border-[#C3EED4]', 'label' => 'Sedang Dipinjam'],
+                            \App\Enums\StatusPeminjaman::Pinjam => ['bg' => 'bg-[#FFF8E1]', 'text' => 'text-[#F57C00]', 'border' => 'border-[#FFE0B2]', 'label' => 'Menunggu Persetujuan'],
+                            \App\Enums\StatusPeminjaman::Disetujui => ['bg' => 'bg-[#E3F2FD]', 'text' => 'text-[#1565C0]', 'border' => 'border-[#BBDEFB]', 'label' => 'Disetujui & Dapat Diambil'],
                             \App\Enums\StatusPeminjaman::Overdue => ['bg' => 'bg-[#F9DEDC]', 'text' => 'text-[#B3261E]', 'border' => 'border-[#F2B8B5]', 'label' => 'Terlambat'],
-                            \App\Enums\StatusPeminjaman::Ditolak => ['bg' => 'bg-[#F5F5F5]', 'text' => 'text-[#616161]', 'border' => 'border-[#E0E0E0]', 'label' => 'Ditolak'],
-                            default => ['bg' => 'bg-[#F5F5F5]', 'text' => 'text-[#49454F]', 'border' => 'border-[#E0E0E0]', 'label' => 'Dikembalikan'],
+                            \App\Enums\StatusPeminjaman::Ditolak => ['bg' => 'bg-[#F9DEDC]', 'text' => 'text-[#B3261E]', 'border' => 'border-[#F2B8B5]', 'label' => 'Ditolak'],
+                            default => ['bg' => 'bg-[#E6F4EA]', 'text' => 'text-[#137333]', 'border' => 'border-[#C3EED4]', 'label' => 'Selesai'],
                         };
 
                         // URL Gambar Aman
@@ -86,14 +116,14 @@
                     @endphp
 
                     {{-- CARD ITEM --}}
-                    <div class="gsap-card opacity-0 group relative bg-white rounded-[24px] p-5 border border-[#E7E0EC] shadow-sm hover:shadow-[0_8px_30px_rgba(103,80,164,0.08)] hover:border-[#D0BCFF] transition-all duration-300 mb-6 overflow-hidden">
+                    <div class="animate-fade-in-up {{ $loop->index <= 4 ? 'animation-delay-' . ($loop->index * 100) : '' }} group relative bg-white rounded-[24px] p-5 border border-[#E7E0EC] shadow-sm hover:shadow-[0_8px_30px_rgba(103,80,164,0.08)] hover:border-[#D0BCFF] transition-all duration-300 mb-6 overflow-hidden">
                         
                         {{-- Decorative Sidebar Line --}}
-                        <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $status == \App\Enums\StatusPeminjaman::Overdue ? 'bg-[#B3261E]' : ($status == \App\Enums\StatusPeminjaman::Diterima ? 'bg-[#146C2E]' : 'bg-[#E7E0EC]') }}"></div>
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 {{ $status == \App\Enums\StatusPeminjaman::Overdue ? 'bg-[#B3261E]' : ($status == \App\Enums\StatusPeminjaman::Selesai ? 'bg-[#146C2E]' : ($status == \App\Enums\StatusPeminjaman::Disetujui ? 'bg-[#1565C0]' : 'bg-[#E7E0EC]')) }}"></div>
 
                         <div class="flex flex-col md:flex-row gap-6 items-start pl-4">
                             
-                            {{-- 1. Cover Image (Floating) --}}
+                            {{-- 1. Cover Image --}}
                             <div class="relative shrink-0 w-full md:w-auto flex justify-center md:block">
                                 <div class="w-24 aspect-[2/3] rounded-xl overflow-hidden shadow-md border border-[#E7E0EC] group-hover:scale-105 transition-transform duration-500 bg-[#F3EDF7]">
                                     <img 
@@ -129,13 +159,7 @@
 
                                     {{-- Action Buttons (Desktop Position) --}}
                                     <div class="hidden md:block">
-                                        @if($status === \App\Enums\StatusPeminjaman::Diantar)
-                                            <button wire:click="confirmReceipt({{ $peminjaman->id }})"
-                                                class="flex items-center gap-2 bg-[#146C2E] hover:bg-[#0F5522] text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                                Terima Buku
-                                            </button>
-                                        @elseif($status === \App\Enums\StatusPeminjaman::Dikembalikan)
+                                        @if($status === \App\Enums\StatusPeminjaman::Selesai)
                                             <a href="{{ route('book.detail', $peminjaman->book_id) }}" 
                                                class="flex items-center gap-2 bg-white border border-[#79747E] text-[#6750A4] hover:bg-[#F3EDF7] px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -187,12 +211,7 @@
 
                                 {{-- Action Buttons (Mobile Position) --}}
                                 <div class="md:hidden mt-4 pt-4 border-t border-[#E7E0EC] flex justify-end">
-                                    @if($status === \App\Enums\StatusPeminjaman::Diantar)
-                                        <button wire:click="confirmReceipt({{ $peminjaman->id }})"
-                                            class="w-full flex justify-center items-center gap-2 bg-[#146C2E] text-white px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wide shadow-sm">
-                                            Terima Buku
-                                        </button>
-                                    @elseif($status === \App\Enums\StatusPeminjaman::Dikembalikan)
+                                    @if($status === \App\Enums\StatusPeminjaman::Selesai)
                                         <a href="{{ route('book.detail', $peminjaman->book_id) }}" 
                                            class="w-full flex justify-center items-center gap-2 bg-white border border-[#79747E] text-[#6750A4] px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wide">
                                             Beri Ulasan
@@ -204,13 +223,13 @@
                     </div>
                 @empty
                     {{-- EMPTY STATE --}}
-                    <div class="py-24 text-center gsap-fade-up opacity-0">
+                    <div class="py-24 text-center animate-fade-in-up w-full">
                         <div class="w-24 h-24 bg-[#F3EDF7] rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
                             <svg class="w-10 h-10 text-[#6750A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                         </div>
                         <h3 class="font-serif-display text-2xl text-[#1D1B20] mb-2">Belum Ada Peminjaman</h3>
                         <p class="text-[#49454F] mb-8 max-w-sm mx-auto">
-                            Anda belum memiliki riwayat peminjaman buku. Mulai petualangan literasi Anda sekarang.
+                            Tidak ada data peminjaman di tab ini.
                         </p>
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-[#1D1B20] text-white rounded-full text-sm font-bold hover:bg-[#6750A4] transition-all shadow-lg transform hover:-translate-y-1">
                             <span>Jelajahi Katalog</span>
@@ -221,39 +240,4 @@
             </div>
         </div>
     </div>
-
-    {{-- Scripts --}}
-    <script>
-        function initLoansAnim() {
-            if (typeof gsap !== 'undefined') {
-                // Header Entry
-                gsap.fromTo('.gsap-header', 
-                    { y: 30, opacity: 0 }, 
-                    { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
-                );
-
-                // Misc Elements
-                gsap.fromTo('.gsap-fade-up', 
-                    { y: 20, opacity: 0 },
-                    { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power2.out' }
-                );
-
-                // Card Stagger
-                if (typeof ScrollTrigger !== 'undefined') {
-                    ScrollTrigger.batch(".gsap-card", {
-                        onEnter: batch => gsap.fromTo(batch, 
-                            { opacity: 0, y: 50 },
-                            { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: "power2.out", overwrite: true }
-                        ),
-                        once: true
-                    });
-                } else {
-                    gsap.fromTo('.gsap-card', { opacity: 0, y: 50 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.8 });
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', initLoansAnim);
-        document.addEventListener('livewire:navigated', initLoansAnim);
-    </script>
 </div>

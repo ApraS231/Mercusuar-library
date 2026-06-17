@@ -43,7 +43,8 @@
             <select wire:model.live="filterRole" class="w-full bg-white border border-[#79747E] rounded-xl py-2.5 px-4 text-sm focus:ring-2 focus:ring-[#6750A4] focus:border-[#6750A4] transition-shadow cursor-pointer">
                 <option value="all">Semua Role</option>
                 <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="kepala_perpus">Kepala Perpustakaan</option>
+                <option value="user">Anggota (User)</option>
             </select>
         </div>
     </div>
@@ -91,7 +92,7 @@
                                         wire:change="updateRole({{ $user->id }}, $event.target.value)"
                                         class="appearance-none w-full text-xs font-bold py-1.5 pl-3 pr-8 rounded-lg border cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors
                                         {{ $user->id == auth()->id() ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' : '' }}
-                                        {{ $user->role == \App\Enums\Role::Admin ? 'bg-[#F9DEDC] text-[#B3261E] border-[#F2B8B5] focus:ring-[#B3261E]' : 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB] focus:ring-[#1565C0]' }}"
+                                        {{ $user->role == \App\Enums\Role::Admin ? 'bg-[#F9DEDC] text-[#B3261E] border-[#F2B8B5] focus:ring-[#B3261E]' : ($user->role == \App\Enums\Role::KepalaPerpus ? 'bg-[#E8DEF8] text-[#6750A4] border-[#D0BCFF] focus:ring-[#6750A4]' : 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB] focus:ring-[#1565C0]') }}"
                                         {{ $user->id == auth()->id() ? 'disabled' : '' }}>
                                         
                                         @foreach($roles as $role)

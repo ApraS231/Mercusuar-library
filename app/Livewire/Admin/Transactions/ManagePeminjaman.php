@@ -15,7 +15,7 @@ class ManagePeminjaman extends Component
     use WithPagination;
 
     // Properti untuk memfilter status
-    public $filterStatus = 'Pending'; // Default filter
+    public $filterStatus = 'Pinjam'; // Default filter
     public $statuses = []; // Untuk tab filter
 
     public function mount()
@@ -35,13 +35,17 @@ class ManagePeminjaman extends Component
 
     /**
      * Logika: Menyetujui booking
-     * Sesuai Roadmap: Ubah status ke 'Disetujui'
+     * Sesuai Roadmap: Ubah status ke 'Disetujui', set tgl_disetujui & tgl_jatuh_tempo
      */
     public function approve($id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->update(['status' => StatusPeminjaman::Disetujui]);
-        session()->flash('success', 'Booking telah disetujui.');
+        $peminjaman->update([
+            'status' => StatusPeminjaman::Disetujui,
+            'tgl_disetujui' => now(),
+            'tgl_jatuh_tempo' => now()->addDays(7)
+        ]);
+        session()->flash('success', 'Booking telah disetujui. Silakan serahkan buku kepada peminjam.');
     }
 
     /**
@@ -62,32 +66,22 @@ class ManagePeminjaman extends Component
     }
 
     /**
-     * Logika: Menandai sebagai 'Diantar'
-     * Sesuai Roadmap: Ubah status ke 'Diantar'
-     */
-    public function markAsDelivered($id)
-    {
-        Peminjaman::findOrFail($id)->update(['status' => StatusPeminjaman::Diantar]);
-        session()->flash('success', 'Status peminjaman diubah menjadi "Diantar".');
-    }
-
-    /**
-     * Logika: Konfirmasi pengembalian buku
+     * Logika: Selesaikan peminjaman (Buku dikembalikan)
      * Sesuai Roadmap: 
-     * 1. Ubah status ke 'Dikembalikan'
-     * 2. Catat tgl_dikembalikan
+     * 1. Ubah status ke 'Selesai'
+     * 2. Catat tgl_selesai
      * 3. Kembalikan stok
      * 4. Cek & Aktifkan akun user jika tidak ada denda lain
      */
-    public function confirmReturn($id)
+    public function markAsDone($id)
     {
         // Eager load relasi yang dibutuhkan
         $peminjaman = Peminjaman::with('user', 'book')->findOrFail($id);
 
-        // 1. & 2. Ubah status dan catat tanggal
+        // 1. & 2. Ubah status dan catat tanggal selesai
         $peminjaman->update([
-            'status' => StatusPeminjaman::Dikembalikan,
-            'tgl_dikembalikan' => now()
+            'status' => StatusPeminjaman::Selesai,
+            'tgl_selesai' => now()
         ]);
 
         // 3. Kembalikan stok
@@ -106,7 +100,7 @@ class ManagePeminjaman extends Component
             $user->update(['status_akun' => StatusAkun::Aktif]);
         }
 
-        session()->flash('success', 'Pengembalian buku telah dikonfirmasi dan stok diperbarui.');
+        session()->flash('success', 'Peminjaman telah diselesaikan dan stok diperbarui.');
     }
 
     public function render()
