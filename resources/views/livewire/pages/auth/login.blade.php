@@ -40,7 +40,17 @@ new #[Layout('layouts.guest')] class extends Component
         }
 
         Session::regenerate();
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        
+        $user = Auth::user();
+        $defaultRoute = route('dashboard', absolute: false);
+
+        if ($user->role === \App\Enums\Role::Admin) {
+            $defaultRoute = route('admin.dashboard', absolute: false);
+        } elseif ($user->role === \App\Enums\Role::KepalaPerpus) {
+            $defaultRoute = route('kepala-perpus.dashboard', absolute: false);
+        }
+
+        $this->redirectIntended(default: $defaultRoute, navigate: true);
     }
 
     /**

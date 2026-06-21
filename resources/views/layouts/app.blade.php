@@ -50,8 +50,14 @@
 
                     <div class="flex items-center gap-6">
                         <div class="hidden md:flex items-center gap-6 text-sm font-medium text-[#49454F]">
-                            <a href="{{ route('dashboard') }}" class="hover:text-[#6750A4] transition-colors {{ request()->routeIs('dashboard') ? 'text-[#6750A4] font-bold' : '' }}">Katalog</a>
-                            <a href="{{ route('user.peminjaman') }}" class="hover:text-[#6750A4] transition-colors {{ request()->routeIs('user.peminjaman') ? 'text-[#6750A4] font-bold' : '' }}">Peminjaman Saya</a>
+                            @if(auth()->user()->role !== \App\Enums\Role::KepalaPerpus)
+                                <a href="{{ route('dashboard') }}" class="hover:text-[#6750A4] transition-colors {{ request()->routeIs('dashboard') ? 'text-[#6750A4] font-bold' : '' }}">Katalog</a>
+                            @endif
+
+                            @if(auth()->user()->role === \App\Enums\Role::User)
+                                <a href="{{ route('user.peminjaman') }}" class="hover:text-[#6750A4] transition-colors {{ request()->routeIs('user.peminjaman') ? 'text-[#6750A4] font-bold' : '' }}">Peminjaman Saya</a>
+                            @endif
+
                             @if(auth()->user()->role === \App\Enums\Role::Admin)
                                 <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-[#1D1B20] text-white rounded-full hover:bg-[#6750A4] transition-colors shadow-md">Admin Panel</a>
                             @elseif(auth()->user()->role === \App\Enums\Role::KepalaPerpus)

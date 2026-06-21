@@ -88,6 +88,10 @@ class Login extends Component
             return '/admin/dashboard';
         }
 
+        if ($user->role === Role::KepalaPerpus) {
+            return '/kepala-perpus/dashboard';
+        }
+
         return '/dashboard'; 
     }
 }

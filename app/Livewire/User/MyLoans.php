@@ -13,6 +13,13 @@ class MyLoans extends Component
 {
     public string $activeTab = 'aktif';
 
+    public function mount()
+    {
+        if (auth()->user()->role !== \App\Enums\Role::User) {
+            abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
+        }
+    }
+
     /**
      * Set active tab
      */

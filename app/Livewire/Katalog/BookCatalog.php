@@ -18,6 +18,13 @@ class BookCatalog extends Component
     public $search = '';
     public $selectedCategory = ''; // Fitur Baru: Filter Kategori
 
+    public function mount()
+    {
+        if (auth()->user()->role === \App\Enums\Role::KepalaPerpus) {
+            abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
+        }
+    }
+
     // Reset halaman saat filter berubah
     public function updatingSearch() { $this->resetPage(); }
     public function updatingSelectedCategory() { $this->resetPage(); }

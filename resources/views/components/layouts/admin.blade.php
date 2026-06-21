@@ -21,6 +21,14 @@
         
         /* Transisi halus untuk lebar sidebar */
         .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Fallback classes for sidebar and content width toggles */
+        @media (min-width: 768px) {
+            .md\:ml-72 { margin-left: 18rem; }
+            .md\:ml-20 { margin-left: 5rem; }
+            .md\:w-72 { width: 18rem; }
+            .md\:w-20 { width: 5rem; }
+        }
     </style>
 </head>
 <body class="font-sans-text antialiased bg-[#FDF7FF] text-[#1D1B20]" 

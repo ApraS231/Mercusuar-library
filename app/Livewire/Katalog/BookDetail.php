@@ -25,6 +25,10 @@ class BookDetail extends Component
 
     public function mount(Book $book)
     {
+        if (auth()->user()->role === \App\Enums\Role::KepalaPerpus) {
+            abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
+        }
+
         $this->book = $book->load('reviews.user');
         
         // Cek riwayat peminjaman untuk mengizinkan review
