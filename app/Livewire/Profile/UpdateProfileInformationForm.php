@@ -31,9 +31,6 @@ class UpdateProfileInformationForm extends Component
         // --- AKHIR TAMBAHAN ---
     }
 
-    /**
-     * Update the profile information.
-     */
     public function update(): void
     {
         $user = Auth::user();
@@ -48,6 +45,14 @@ class UpdateProfileInformationForm extends Component
         $user->save();
 
         $this->dispatch('profile-updated', name: $user->name);
+    }
+
+    /**
+     * Alias method for profile updates (called by test suite)
+     */
+    public function updateProfileInformation(): void
+    {
+        $this->update();
     }
 
     /**

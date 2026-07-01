@@ -146,14 +146,54 @@
                                 @error('judul') <p class="text-[#B3261E] text-xs mt-1 ml-1">{{ $message }}</p> @enderror
                             </div>
                             
-                            <div>
+                            <div class="relative" x-data="{
+                                open: false,
+                                selectedId: @entangle('category_id'),
+                                categories: {{ $categories->toJson() }},
+                                get selectedName() {
+                                    let cat = this.categories.find(c => c.id == this.selectedId);
+                                    return cat ? cat.nama_kategori : '-- Pilih Kategori --';
+                                }
+                            }" @click.away="open = false">
                                 <label class="block text-xs font-bold text-[#49454F] uppercase tracking-wider mb-2">Kategori *</label>
-                                <select wire:model="category_id" class="w-full rounded-xl border-[#79747E] focus:border-[#6750A4] focus:ring-2 focus:ring-[#6750A4]/20 text-[#1D1B20] py-3 px-4 bg-white">
-                                    <option value="">-- Pilih Kategori --</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->nama_kategori }}</option>
-                                    @endforeach
-                                </select>
+                                
+                                <button type="button" @click="open = !open" 
+                                        class="w-full flex items-center justify-between rounded-xl border border-[#79747E] focus:outline-none focus:border-[#6750A4] focus:ring-2 focus:ring-[#6750A4]/20 text-[#1D1B20] py-3 px-4 bg-white text-left transition-all">
+                                    <span x-text="selectedName"></span>
+                                    <svg class="w-5 h-5 text-[#49454F] transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                                
+                                <div x-show="open" 
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="transform opacity-0 scale-95"
+                                     x-transition:enter-end="transform opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="transform opacity-100 scale-100"
+                                     x-transition:leave-end="transform opacity-0 scale-95"
+                                     class="absolute z-50 mt-1 w-full rounded-xl bg-white border border-[#E7E0EC] shadow-lg max-h-60 overflow-y-auto custom-scrollbar" 
+                                     style="display: none;">
+                                    
+                                    <div class="py-1">
+                                        <button type="button" @click="selectedId = ''; open = false" 
+                                                class="w-full text-left px-4 py-2.5 text-sm hover:bg-[#F3EDF7] transition-colors"
+                                                :class="selectedId === '' ? 'bg-[#E8DEF8] font-bold text-[#6750A4]' : 'text-[#49454F]'">
+                                            -- Pilih Kategori --
+                                        </button>
+                                        
+                                        <template x-for="category in categories" :key="category.id">
+                                            <button type="button" @click="selectedId = category.id; open = false" 
+                                                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-[#F3EDF7] transition-colors flex items-center justify-between"
+                                                    :class="selectedId == category.id ? 'bg-[#E8DEF8] font-bold text-[#6750A4]' : 'text-[#1D1B20]'">
+                                                <span x-text="category.nama_kategori"></span>
+                                                <svg x-show="selectedId == category.id" class="w-4 h-4 text-[#6750A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
                                 @error('category_id') <p class="text-[#B3261E] text-xs mt-1 ml-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
