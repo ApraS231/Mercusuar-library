@@ -56,6 +56,10 @@ class Book extends Model
             return $this->gambar_cover;
         }
 
-        return asset('storage/' . $this->gambar_cover);
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($this->gambar_cover)) {
+            return asset('storage/' . $this->gambar_cover);
+        }
+
+        return 'https://placehold.co/400x600/F3EDF7/6750A4?text=' . urlencode($this->judul ?? 'No Cover');
     }
 }

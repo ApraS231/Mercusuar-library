@@ -26,6 +26,13 @@ use App\Livewire\User\MyLoans;
 // Rute Homepage (dialihkan ke login atau dashboard)
 Route::get('/', function () {
     if (auth()->check()) {
+        $user = auth()->user();
+        if ($user->Peran_Akses_Pengguna === \App\Enums\Role::Admin) {
+            return redirect()->route('admin.dashboard');
+        }
+        if ($user->Peran_Akses_Pengguna === \App\Enums\Role::KepalaPerpus) {
+            return redirect()->route('kepala-perpus.dashboard');
+        }
         return redirect()->route('dashboard');
     }
     return redirect()->route('login');
