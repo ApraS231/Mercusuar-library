@@ -28,12 +28,15 @@ new #[Layout('layouts.guest')] class extends Component
      */
     public function login(): void
     {
-        $credentials = $this->validate([
+        $this->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $this->remember)) {
+        if (! Auth::attempt([
+            'Email_Pengguna' => $this->email,
+            'password' => $this->password,
+        ], $this->remember)) {
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
@@ -44,9 +47,9 @@ new #[Layout('layouts.guest')] class extends Component
         $user = Auth::user();
         $defaultRoute = route('dashboard', absolute: false);
 
-        if ($user->role === \App\Enums\Role::Admin) {
+        if ($user->Peran_Akses_Pengguna === \App\Enums\Role::Admin) {
             $defaultRoute = route('admin.dashboard', absolute: false);
-        } elseif ($user->role === \App\Enums\Role::KepalaPerpus) {
+        } elseif ($user->Peran_Akses_Pengguna === \App\Enums\Role::KepalaPerpus) {
             $defaultRoute = route('kepala-perpus.dashboard', absolute: false);
         }
 
@@ -59,15 +62,15 @@ new #[Layout('layouts.guest')] class extends Component
     public function register(): void
     {
         $validated = $this->validate([
-            'reg_name' => ['required', 'string', 'max:255'],
-            'reg_email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email'],
+            'reg_name' => ['required', 'string', 'max:20'],
+            'reg_email' => ['required', 'string', 'lowercase', 'email', 'max:20', 'unique:'.User::class.',Email_Pengguna'],
             'reg_password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $validated['reg_name'],
-            'email' => $validated['reg_email'],
-            'password' => Hash::make($validated['reg_password']),
+            'Nama_Pengguna' => $validated['reg_name'],
+            'Email_Pengguna' => $validated['reg_email'],
+            'Kata_Sandi_Pengguna' => Hash::make($validated['reg_password']),
         ]);
 
         event(new Registered($user));

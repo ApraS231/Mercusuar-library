@@ -24,33 +24,33 @@ class RoleAccessRestrictionsTest extends TestCase
         parent::setUp();
 
         $this->admin = User::create([
-            'name' => 'Admin Mercusuar',
-            'email' => 'admin@mercusuar.com',
-            'password' => bcrypt('password'),
-            'role' => Role::Admin,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Admin Mercusuar',
+            'Email_Pengguna' => 'admin@mercusuar.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::Admin,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
         $this->kepala = User::create([
-            'name' => 'Kepala Perpustakaan',
-            'email' => 'kepala@mercusuar.com',
-            'password' => bcrypt('password'),
-            'role' => Role::KepalaPerpus,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Kepala Perpustakaan',
+            'Email_Pengguna' => 'kepala@mercusuar.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::KepalaPerpus,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
         $this->user = User::create([
-            'name' => 'Andi Anggota',
-            'email' => 'andi@gmail.com',
-            'password' => bcrypt('password'),
-            'role' => Role::User,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Andi Anggota',
+            'Email_Pengguna' => 'andi@gmail.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::User,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
-        $category = Category::create(['nama_kategori' => 'Novel']);
+        $category = Category::create(['Nama_kategori' => 'Novel']);
         $this->book = Book::create([
             'judul' => 'Buku Test',
-            'category_id' => $category->id,
+            'Id_kategori' => $category->Id_kategori,
             'penulis' => 'Penulis Test',
             'penerbit' => 'Penerbit Test',
             'stok_total' => 5,
@@ -68,7 +68,7 @@ class RoleAccessRestrictionsTest extends TestCase
         $response->assertStatus(403);
 
         // 2. Book Detail page (/book/{id})
-        $response = $this->actingAs($this->kepala)->get(route('book.detail', $this->book->id));
+        $response = $this->actingAs($this->kepala)->get(route('book.detail', $this->book->Id_Buku));
         $response->assertStatus(403);
 
         // 3. My Loans page (/my-loans)
@@ -86,12 +86,12 @@ class RoleAccessRestrictionsTest extends TestCase
     }
 
     /**
-     * Test Admin is allowed to access Catalog.
+     * Test Admin is blocked from accessing Catalog.
      */
-    public function test_admin_is_allowed_to_access_catalog(): void
+    public function test_admin_is_blocked_from_accessing_catalog(): void
     {
         $response = $this->actingAs($this->admin)->get('/dashboard');
-        $response->assertStatus(200);
+        $response->assertStatus(403);
     }
 
     /**
@@ -114,7 +114,7 @@ class RoleAccessRestrictionsTest extends TestCase
     public function test_login_redirects_kepala_perpustakaan_correctly(): void
     {
         $component = \Livewire\Volt\Volt::test('pages.auth.login')
-            ->set('email', $this->kepala->email)
+            ->set('email', $this->kepala->Email_Pengguna)
             ->set('password', 'password');
 
         $component->call('login');
@@ -130,7 +130,7 @@ class RoleAccessRestrictionsTest extends TestCase
     public function test_login_redirects_admin_correctly(): void
     {
         $component = \Livewire\Volt\Volt::test('pages.auth.login')
-            ->set('email', $this->admin->email)
+            ->set('email', $this->admin->Email_Pengguna)
             ->set('password', 'password');
 
         $component->call('login');

@@ -13,15 +13,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjamans', function (Blueprint $table) {
-            $table->id(); 
-            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('book_id')->constrained('books')->onDelete('restrict');
+            $table->id('Id_Peminjaman'); 
+            $table->foreignId('Id_Pengguna')->constrained('users', 'Id_pengguna')->onDelete('restrict');
+            $table->foreignId('Id_Buku')->constrained('books', 'Id_Buku')->onDelete('restrict');
             
-            $table->string('status')->default(StatusPeminjaman::Pinjam->value); 
-            $table->dateTime('tgl_booking');
-            $table->dateTime('tgl_disetujui')->nullable();
-            $table->date('tgl_jatuh_tempo')->nullable();
-            $table->dateTime('tgl_selesai')->nullable();
+            $table->string('Status_Peminjaman')->default('Pinjam'); // uses string or enum as string
+            $table->dateTime('Tanggal_Pinjam');
+            $table->dateTime('Tanggal_Disetujui')->nullable();
+            $table->date('Tanggal_Jatuh_Tempo')->nullable();
+            $table->dateTime('Tanggal_Selesai')->nullable();
             
             $table->timestamps();
         });

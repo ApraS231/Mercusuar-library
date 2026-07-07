@@ -62,16 +62,16 @@
 
                             {{-- Kolom Peminjam --}}
                             <td class="px-6 py-4 whitespace-nowrap align-top">
-                                <div class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->user->name ?? 'User Dihapus' }}</div>
-                                <div class="text-xs text-[#49454F]">{{ $peminjaman->user->email ?? '-' }}</div>
+                                <div class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->user->Nama_Pengguna ?? 'User Dihapus' }}</div>
+                                <div class="text-xs text-[#49454F]">{{ $peminjaman->user->Email_Pengguna ?? '-' }}</div>
                             </td>
 
                             {{-- Kolom Tanggal --}}
                             <td class="px-6 py-4 whitespace-nowrap align-top">
-                                <div class="text-sm text-[#1D1B20]">Booking: {{ $peminjaman->tgl_booking->format('d M Y') }}</div>
-                                @if($peminjaman->tgl_jatuh_tempo)
+                                <div class="text-sm text-[#1D1B20]">Booking: {{ $peminjaman->Tanggal_Pinjam->format('d M Y') }}</div>
+                                @if($peminjaman->Tanggal_Jatuh_Tempo)
                                     <div class="text-xs text-[#B3261E] font-medium mt-1">
-                                        Due: {{ $peminjaman->tgl_jatuh_tempo->format('d M Y') }}
+                                        Due: {{ $peminjaman->Tanggal_Jatuh_Tempo->format('d M Y') }}
                                     </div>
                                 @endif
                             </td>
@@ -79,7 +79,7 @@
                             {{-- Kolom Status (Badge) --}}
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 @php
-                                    $statusEnum = $peminjaman->status;
+                                    $statusEnum = $peminjaman->Status_Peminjaman;
                                     $badgeClass = match($statusEnum) {
                                         \App\Enums\StatusPeminjaman::Pinjam => 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2]',
                                         \App\Enums\StatusPeminjaman::Disetujui => 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB]',
@@ -98,15 +98,15 @@
                                 <div class="flex justify-end gap-2">
                                     
                                     @if ($statusEnum === \App\Enums\StatusPeminjaman::Pinjam)
-                                        <button wire:click="approve({{ $peminjaman->id }})" class="p-2 bg-[#E6F4EA] text-[#137333] rounded-full hover:bg-[#C3EED4] transition-colors" title="Setujui">
+                                        <button wire:click="approve({{ $peminjaman->Id_Peminjaman }})" class="p-2 bg-[#E6F4EA] text-[#137333] rounded-full hover:bg-[#C3EED4] transition-colors" title="Setujui">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </button>
-                                        <button wire:click="reject({{ $peminjaman->id }})" class="p-2 bg-[#F9DEDC] text-[#B3261E] rounded-full hover:bg-[#F2B8B5] transition-colors" title="Tolak">
+                                        <button wire:click="reject({{ $peminjaman->Id_Peminjaman }})" class="p-2 bg-[#F9DEDC] text-[#B3261E] rounded-full hover:bg-[#F2B8B5] transition-colors" title="Tolak">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     
                                     @elseif ($statusEnum === \App\Enums\StatusPeminjaman::Disetujui || $statusEnum === \App\Enums\StatusPeminjaman::Overdue)
-                                        <button wire:click="markAsDone({{ $peminjaman->id }})" 
+                                        <button wire:click="markAsDone({{ $peminjaman->Id_Peminjaman }})" 
                                                 wire:confirm="Selesaikan peminjaman ini? Buku akan ditandai kembali dan stok diperbarui."
                                                 class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#6750A4] text-white rounded-full hover:bg-[#5F4999] transition-colors text-xs font-bold shadow-md hover:shadow-lg">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>

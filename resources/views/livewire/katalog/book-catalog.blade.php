@@ -73,9 +73,9 @@
                         </button>
                         @foreach ($categories as $cat)
                             <button 
-                                wire:click="$set('selectedCategory', {{ $cat->id }})"
-                                class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 {{ $selectedCategory == $cat->id ? 'bg-[#6750A4] text-white shadow-md' : 'bg-white border border-[#E7E0EC] text-[#49454F] hover:bg-[#F3EDF7] hover:text-[#6750A4]' }}">
-                                {{ $cat->nama_kategori }}
+                                wire:click="$set('selectedCategory', {{ $cat->Id_kategori }})"
+                                class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 {{ $selectedCategory == $cat->Id_kategori ? 'bg-[#6750A4] text-white shadow-md' : 'bg-white border border-[#E7E0EC] text-[#49454F] hover:bg-[#F3EDF7] hover:text-[#6750A4]' }}">
+                                {{ $cat->Nama_kategori }}
                             </button>
                         @endforeach
                     </div>
@@ -105,7 +105,7 @@
 
                     {{-- CARD ITEM --}}
                     <div class="gsap-card group relative flex flex-col h-full">
-                        <a href="{{ route('book.detail', $book->id) }}" class="flex flex-col h-full relative block">
+                        <a href="{{ route('book.detail', $book->Id_Buku) }}" class="flex flex-col h-full relative block">
                             
                             {{-- Cover Image Container --}}
                             <div class="relative aspect-[2/3] rounded-2xl overflow-hidden bg-[#F3EDF7] shadow-sm mb-4 border border-[#E7E0EC] transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-xl {{ $isOutOfStock ? 'grayscale opacity-80' : '' }}">
@@ -124,7 +124,7 @@
                                 <div class="absolute top-3 left-3 right-3 flex justify-between items-start">
                                     @if($book->category)
                                         <span class="px-2 py-1 rounded-md bg-white/95 backdrop-blur text-[9px] font-bold uppercase tracking-wider text-[#6750A4] shadow-sm">
-                                            {{ $book->category->nama_kategori }}
+                                            {{ $book->category->Nama_kategori }}
                                         </span>
                                     @endif
                                 </div>

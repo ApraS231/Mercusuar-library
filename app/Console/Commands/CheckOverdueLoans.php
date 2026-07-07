@@ -33,8 +33,8 @@ class CheckOverdueLoans extends Command
         // 1. Ambil semua peminjaman yang:
         //    - Statusnya "Disetujui"
         //    - Tanggal jatuh temponya SUDAH LEWAT (kurang dari hari ini)
-        $overdueLoans = Peminjaman::where('status', StatusPeminjaman::Disetujui)
-                                ->where('tgl_jatuh_tempo', '<', Carbon::now()->toDateString())
+        $overdueLoans = Peminjaman::where('Status_Peminjaman', StatusPeminjaman::Disetujui)
+                                ->where('Tanggal_Jatuh_Tempo', '<', Carbon::now()->toDateString())
                                 ->get();
 
         if ($overdueLoans->isEmpty()) {
@@ -49,21 +49,21 @@ class CheckOverdueLoans extends Command
         foreach ($overdueLoans as $peminjaman) {
             
             // 2. Ubah status peminjaman menjadi Overdue
-            $peminjaman->status = StatusPeminjaman::Overdue;
+            $peminjaman->Status_Peminjaman = StatusPeminjaman::Overdue;
             $peminjaman->save();
 
             // 3. Catat ID user yang perlu dibatasi
-            if (!in_array($peminjaman->user_id, $userIdsToRestrict)) {
-                $userIdsToRestrict[] = $peminjaman->user_id;
+            if (!in_array($peminjaman->Id_Pengguna, $userIdsToRestrict)) {
+                $userIdsToRestrict[] = $peminjaman->Id_Pengguna;
             }
 
-            Log::info("Peminjaman ID: $peminjaman->id (User ID: $peminjaman->user_id) telah ditandai Overdue.");
+            Log::info("Peminjaman ID: $peminjaman->Id_Peminjaman (User ID: $peminjaman->Id_Pengguna) telah ditandai Overdue.");
         }
 
         // 4. Ubah status akun user menjadi Dibatasi
         if (!empty($userIdsToRestrict)) {
-            User::whereIn('id', $userIdsToRestrict)
-                ->update(['status_akun' => StatusAkun::Dibatasi]);
+            User::whereIn('Id_pengguna', $userIdsToRestrict)
+                ->update(['Status_Akun_Pengguna' => StatusAkun::Dibatasi]);
             
             $this->info("Akun untuk " . count($userIdsToRestrict) . " user telah ditandai 'Dibatasi'.");
         }

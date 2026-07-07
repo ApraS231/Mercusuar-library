@@ -37,12 +37,12 @@ class ListBooks extends Component
     public function rules()
     {
         return [
-            'judul' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'penulis' => 'nullable|string|max:255',
-            'penerbit' => 'nullable|string|max:255',
+            'judul' => 'required|string|max:50',
+            'category_id' => 'required|exists:categories,Id_kategori',
+            'penulis' => 'nullable|string|max:30',
+            'penerbit' => 'nullable|string|max:20',
             'deskripsi' => 'nullable|string',
-            'isbn' => 'nullable|string|max:25|unique:books,isbn,' . $this->bookId,
+            'isbn' => 'nullable|string|max:8|unique:books,ISBN,' . $this->bookId . ',Id_Buku',
             'stok_total' => 'required|integer|min:0',
             'gambar_cover_baru' => 'nullable|image|max:2048',
         ];
@@ -64,7 +64,7 @@ class ListBooks extends Component
         $this->reset([
             'bookId', 
             'judul', 
-            'category_id', // Reset kategori juga
+            'category_id', 
             'penulis', 
             'penerbit', 
             'deskripsi', 
@@ -94,11 +94,11 @@ class ListBooks extends Component
         
         $this->bookId = $id;
         $this->judul = $book->judul;
-        $this->category_id = $book->category_id; // Load kategori dari DB
+        $this->category_id = $book->Id_kategori; 
         $this->penulis = $book->penulis;
         $this->penerbit = $book->penerbit;
         $this->deskripsi = $book->deskripsi;
-        $this->isbn = $book->isbn;
+        $this->isbn = $book->ISBN;
         $this->stok_total = $book->stok_total;
         $this->gambar_cover_lama = $book->gambar_cover;
 
@@ -123,11 +123,11 @@ class ListBooks extends Component
 
         $data = [
             'judul' => $this->judul,
-            'category_id' => $this->category_id, // Simpan kategori
+            'Id_kategori' => $this->category_id, 
             'penulis' => $this->penulis,
             'penerbit' => $this->penerbit,
             'deskripsi' => $this->deskripsi,
-            'isbn' => $this->isbn,
+            'ISBN' => $this->isbn,
             'stok_total' => $this->stok_total,
         ];
 
@@ -139,12 +139,14 @@ class ListBooks extends Component
             if ($this->gambar_cover_lama && !str_starts_with($this->gambar_cover_lama, 'http://') && !str_starts_with($this->gambar_cover_lama, 'https://')) {
                 Storage::disk('public')->delete($this->gambar_cover_lama);
             }
-            // Simpan gambar baru
-            $data['gambar_cover'] = $this->gambar_cover_baru->store('covers', 'public');
+            // Simpan gambar baru dengan nama acak pendek agar muat di varchar(20) "covers/xxxxx.ext"
+            $ext = $this->gambar_cover_baru->getClientOriginalExtension();
+            $fileName = \Illuminate\Support\Str::random(5) . '.' . $ext;
+            $data['gambar_cover'] = $this->gambar_cover_baru->storeAs('covers', $fileName, 'public');
         }
 
         // Simpan ke Database
-        $book = Book::updateOrCreate(['id' => $this->bookId], $data);
+        $book = Book::updateOrCreate(['Id_Buku' => $this->bookId], $data);
 
         // Logika Stok Awal: Jika buku baru, samakan stok tersedia dengan stok total
         if ($isNewBook) {

@@ -70,11 +70,11 @@
                                 <div class="flex items-center gap-3">
                                     {{-- Avatar Initials --}}
                                     <div class="h-10 w-10 rounded-full bg-[#E8DEF8] flex items-center justify-center text-[#6750A4] font-bold text-sm shadow-sm">
-                                        {{ substr($user->name, 0, 1) }}
+                                        {{ substr($user->Nama_Pengguna, 0, 1) }}
                                     </div>
                                     <div>
-                                        <div class="text-sm font-bold text-[#1D1B20]">{{ $user->name }}</div>
-                                        <div class="text-xs text-[#49454F]">{{ $user->email }}</div>
+                                        <div class="text-sm font-bold text-[#1D1B20]">{{ $user->Nama_Pengguna }}</div>
+                                        <div class="text-xs text-[#49454F]">{{ $user->Email_Pengguna }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -89,14 +89,14 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="relative w-32">
                                     <select 
-                                        wire:change="updateRole({{ $user->id }}, $event.target.value)"
+                                        wire:change="updateRole({{ $user->Id_pengguna }}, $event.target.value)"
                                         class="appearance-none w-full text-xs font-bold py-1.5 pl-3 pr-8 rounded-lg border cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors
-                                        {{ $user->id == auth()->id() ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' : '' }}
-                                        {{ $user->role == \App\Enums\Role::Admin ? 'bg-[#F9DEDC] text-[#B3261E] border-[#F2B8B5] focus:ring-[#B3261E]' : ($user->role == \App\Enums\Role::KepalaPerpus ? 'bg-[#E8DEF8] text-[#6750A4] border-[#D0BCFF] focus:ring-[#6750A4]' : 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB] focus:ring-[#1565C0]') }}"
-                                        {{ $user->id == auth()->id() ? 'disabled' : '' }}>
+                                        {{ $user->Id_pengguna == auth()->id() ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' : '' }}
+                                        {{ $user->Peran_Akses_Pengguna == \App\Enums\Role::Admin ? 'bg-[#F9DEDC] text-[#B3261E] border-[#F2B8B5] focus:ring-[#B3261E]' : ($user->Peran_Akses_Pengguna == \App\Enums\Role::KepalaPerpus ? 'bg-[#E8DEF8] text-[#6750A4] border-[#D0BCFF] focus:ring-[#6750A4]' : 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB] focus:ring-[#1565C0]') }}"
+                                        {{ $user->Id_pengguna == auth()->id() ? 'disabled' : '' }}>
                                         
                                         @foreach($roles as $role)
-                                            <option value="{{ $role->value }}" @if($user->role == $role) selected @endif>
+                                            <option value="{{ $role->value }}" @if($user->Peran_Akses_Pengguna == $role) selected @endif>
                                                 {{ $role->name }}
                                             </option>
                                         @endforeach
@@ -111,14 +111,14 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="relative w-36">
                                     <select 
-                                        wire:change="updateStatus({{ $user->id }}, $event.target.value)"
+                                        wire:change="updateStatus({{ $user->Id_pengguna }}, $event.target.value)"
                                         class="appearance-none w-full text-xs font-bold py-1.5 pl-3 pr-8 rounded-lg border cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors
-                                        {{ $user->id == auth()->id() ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' : '' }}
-                                        {{ $user->status_akun == \App\Enums\StatusAkun::Dibatasi ? 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2] focus:ring-[#F57C00]' : 'bg-[#E6F4EA] text-[#146C2E] border-[#C3EED4] focus:ring-[#146C2E]' }}"
-                                        {{ $user->id == auth()->id() ? 'disabled' : '' }}>
+                                        {{ $user->Id_pengguna == auth()->id() ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' : '' }}
+                                        {{ $user->Status_Akun_Pengguna == \App\Enums\StatusAkun::Dibatasi ? 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2] focus:ring-[#F57C00]' : 'bg-[#E6F4EA] text-[#146C2E] border-[#C3EED4] focus:ring-[#146C2E]' }}"
+                                        {{ $user->Id_pengguna == auth()->id() ? 'disabled' : '' }}>
 
                                         @foreach($statuses as $status)
-                                            <option value="{{ $status->value }}" @if($user->status_akun == $status) selected @endif>
+                                            <option value="{{ $status->value }}" @if($user->Status_Akun_Pengguna == $status) selected @endif>
                                                 {{ $status->name }}
                                             </option>
                                         @endforeach

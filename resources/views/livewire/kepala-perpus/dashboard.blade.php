@@ -125,16 +125,16 @@
                                     </td>
                                     {{-- Anggota --}}
                                     <td class="px-4 py-3.5 whitespace-nowrap text-sm text-[#49454F]">
-                                        {{ $peminjaman->user->name ?? 'User Dihapus' }}
+                                        {{ $peminjaman->user->Nama_Pengguna ?? 'User Dihapus' }}
                                     </td>
                                     {{-- Tanggal --}}
                                     <td class="px-4 py-3.5 whitespace-nowrap text-xs text-[#49454F]">
-                                        {{ $peminjaman->tgl_booking->format('d M Y') }}
+                                        {{ $peminjaman->Tanggal_Pinjam->format('d M Y') }}
                                     </td>
                                     {{-- Status --}}
                                     <td class="px-4 py-3.5 whitespace-nowrap">
                                         @php
-                                            $statusEnum = $peminjaman->status;
+                                            $statusEnum = $peminjaman->Status_Peminjaman;
                                             $badgeClass = match($statusEnum) {
                                                 \App\Enums\StatusPeminjaman::Pinjam => 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2]',
                                                 \App\Enums\StatusPeminjaman::Disetujui => 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB]',

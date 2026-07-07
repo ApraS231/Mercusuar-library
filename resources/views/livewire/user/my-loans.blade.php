@@ -97,7 +97,7 @@
                 @forelse ($peminjamans as $peminjaman)
                     @php
                         // Logika Warna & Teks Status
-                        $status = $peminjaman->status;
+                        $status = $peminjaman->Status_Peminjaman;
                         $statusConfig = match($status) {
                             \App\Enums\StatusPeminjaman::Pinjam => ['bg' => 'bg-[#FFF8E1]', 'text' => 'text-[#F57C00]', 'border' => 'border-[#FFE0B2]', 'label' => 'Menunggu Persetujuan'],
                             \App\Enums\StatusPeminjaman::Disetujui => ['bg' => 'bg-[#E3F2FD]', 'text' => 'text-[#1565C0]', 'border' => 'border-[#BBDEFB]', 'label' => 'Disetujui & Dapat Diambil'],
@@ -145,7 +145,7 @@
                                         </span>
 
                                         <h3 class="font-serif-display text-2xl text-[#1D1B20] leading-tight group-hover:text-[#6750A4] transition-colors">
-                                            <a href="{{ route('book.detail', $peminjaman->book_id) }}">
+                                            <a href="{{ route('book.detail', $peminjaman->Id_Buku) }}">
                                                 {{ $peminjaman->book->judul }}
                                             </a>
                                         </h3>
@@ -155,7 +155,7 @@
                                     {{-- Action Buttons (Desktop Position) --}}
                                     <div class="hidden md:block">
                                         @if($status === \App\Enums\StatusPeminjaman::Selesai)
-                                            <a href="{{ route('book.detail', $peminjaman->book_id) }}" 
+                                            <a href="{{ route('book.detail', $peminjaman->Id_Buku) }}" 
                                                class="flex items-center gap-2 bg-white border border-[#79747E] text-[#6750A4] hover:bg-[#F3EDF7] px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                 Beri Ulasan
@@ -172,11 +172,11 @@
                                         </div>
                                         <div>
                                             <p class="text-[10px] text-[#49454F] uppercase tracking-wider font-bold">Tanggal Booking</p>
-                                            <p class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->tgl_booking->format('d F Y, H:i') }}</p>
+                                            <p class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->Tanggal_Pinjam->format('d F Y, H:i') }}</p>
                                         </div>
                                     </div>
 
-                                    @if($peminjaman->tgl_jatuh_tempo)
+                                    @if($peminjaman->Tanggal_Jatuh_Tempo)
                                         <div class="flex items-center gap-3">
                                             <div class="w-8 h-8 rounded-full {{ $status == \App\Enums\StatusPeminjaman::Overdue ? 'bg-[#F9DEDC] text-[#B3261E]' : 'bg-[#E6F4EA] text-[#146C2E]' }} flex items-center justify-center">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -184,7 +184,7 @@
                                             <div>
                                                 <p class="text-[10px] text-[#49454F] uppercase tracking-wider font-bold">Batas Pengembalian</p>
                                                 <p class="text-sm font-bold {{ $status == \App\Enums\StatusPeminjaman::Overdue ? 'text-[#B3261E]' : 'text-[#1D1B20]' }}">
-                                                    {{ \Carbon\Carbon::parse($peminjaman->tgl_jatuh_tempo)->format('d F Y') }}
+                                                    {{ \Carbon\Carbon::parse($peminjaman->Tanggal_Jatuh_Tempo)->format('d F Y') }}
                                                     @if($status == \App\Enums\StatusPeminjaman::Overdue)
                                                         <span class="text-[10px] bg-[#B3261E] text-white px-1.5 rounded ml-1">LEWAT</span>
                                                     @endif
@@ -207,7 +207,7 @@
                                 {{-- Action Buttons (Mobile Position) --}}
                                 <div class="md:hidden mt-4 pt-4 border-t border-[#E7E0EC] flex justify-end">
                                     @if($status === \App\Enums\StatusPeminjaman::Selesai)
-                                        <a href="{{ route('book.detail', $peminjaman->book_id) }}" 
+                                        <a href="{{ route('book.detail', $peminjaman->Id_Buku) }}" 
                                            class="w-full flex justify-center items-center gap-2 bg-white border border-[#79747E] text-[#6750A4] px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wide">
                                             Beri Ulasan
                                         </a>

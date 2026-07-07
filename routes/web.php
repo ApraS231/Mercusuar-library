@@ -7,6 +7,7 @@ use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Books\ListBooks as AdminListBooks;
 use App\Livewire\Admin\Transactions\ManagePeminjaman as AdminManagePeminjaman;
 use App\Livewire\Admin\Users\ListUsers as AdminListUsers;
+use App\Livewire\Admin\Categories\ListCategories as AdminListCategories;
 
 // Komponen Frontend Pengguna
 use App\Livewire\Katalog\BookCatalog;
@@ -69,6 +70,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Langkah 4: Manajemen User
     Route::get('/users', AdminListUsers::class)->name('users.index');
+
+    // Manajemen Kategori
+    Route::get('/categories', AdminListCategories::class)->name('categories.index');
 });
 
 // === RUTE KEPALA PERPUSTAKAAN ===

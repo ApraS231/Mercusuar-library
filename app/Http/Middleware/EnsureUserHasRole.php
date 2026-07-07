@@ -21,7 +21,7 @@ class EnsureUserHasRole
         $user = $request->user();
 
         // Check if user is authenticated and matches one of the roles
-        if ($user && in_array($user->role->value ?? $user->role, $roles)) {
+        if ($user && in_array($user->Peran_Akses_Pengguna->value ?? $user->Peran_Akses_Pengguna, $roles)) {
             return $next($request);
         }
 

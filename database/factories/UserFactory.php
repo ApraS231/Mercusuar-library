@@ -24,11 +24,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'Nama_Pengguna' => substr(fake()->name(), 0, 20),
+            'Email_Pengguna' => Str::random(10) . '@g.com',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'Kata_Sandi_Pengguna' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'Peran_Akses_Pengguna' => \App\Enums\Role::User,
+            'Status_Akun_Pengguna' => \App\Enums\StatusAkun::Aktif,
         ];
     }
 

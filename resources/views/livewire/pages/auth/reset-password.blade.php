@@ -33,10 +33,15 @@ new #[Layout('layouts.guest')] class extends Component
         ]);
 
         $status = Password::reset(
-            $this->only('token', 'email', 'password', 'password_confirmation'),
+            [
+                'token' => $this->token,
+                'Email_Pengguna' => $this->email,
+                'password' => $this->password,
+                'password_confirmation' => $this->password_confirmation,
+            ],
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password),
+                    'Kata_Sandi_Pengguna' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
 

@@ -55,12 +55,12 @@
                             <td class="px-6 py-4 align-top">
                                 <div class="font-bold text-[#1D1B20] text-base">{{ $book->judul }}</div>
                                 <div class="text-sm text-[#49454F] mt-0.5">{{ $book->penulis ?? 'Penulis N/A' }}</div>
-                                <div class="text-xs text-[#49454F]/60 mt-1 font-mono">ISBN: {{ $book->isbn ?? '-' }}</div>
+                                <div class="text-xs text-[#49454F]/60 mt-1 font-mono">ISBN: {{ $book->ISBN ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 @if($book->category)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#E8DEF8] text-[#1D1B20]">
-                                        {{ $book->category->nama_kategori }}
+                                        {{ $book->category->Nama_kategori }}
                                     </span>
                                 @else
                                     <span class="text-xs text-[#49454F]">-</span>
@@ -151,8 +151,8 @@
                                 selectedId: @entangle('category_id'),
                                 categories: {{ $categories->toJson() }},
                                 get selectedName() {
-                                    let cat = this.categories.find(c => c.id == this.selectedId);
-                                    return cat ? cat.nama_kategori : '-- Pilih Kategori --';
+                                    let cat = this.categories.find(c => c.Id_kategori == this.selectedId);
+                                    return cat ? cat.Nama_kategori : '-- Pilih Kategori --';
                                 }
                             }" @click.away="open = false">
                                 <label class="block text-xs font-bold text-[#49454F] uppercase tracking-wider mb-2">Kategori *</label>
@@ -182,12 +182,12 @@
                                             -- Pilih Kategori --
                                         </button>
                                         
-                                        <template x-for="category in categories" :key="category.id">
-                                            <button type="button" @click="selectedId = category.id; open = false" 
+                                        <template x-for="category in categories" :key="category.Id_kategori">
+                                            <button type="button" @click="selectedId = category.Id_kategori; open = false" 
                                                     class="w-full text-left px-4 py-2.5 text-sm hover:bg-[#F3EDF7] transition-colors flex items-center justify-between"
-                                                    :class="selectedId == category.id ? 'bg-[#E8DEF8] font-bold text-[#6750A4]' : 'text-[#1D1B20]'">
-                                                <span x-text="category.nama_kategori"></span>
-                                                <svg x-show="selectedId == category.id" class="w-4 h-4 text-[#6750A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    :class="selectedId == category.Id_kategori ? 'bg-[#E8DEF8] font-bold text-[#6750A4]' : 'text-[#1D1B20]'">
+                                                <span x-text="category.Nama_kategori"></span>
+                                                <svg x-show="selectedId == category.Id_kategori" class="w-4 h-4 text-[#6750A4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                                 </svg>
                                             </button>

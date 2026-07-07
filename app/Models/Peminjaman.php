@@ -18,39 +18,41 @@ class Peminjaman extends Model
      */
     protected $table = 'peminjamans';
 
+    protected $primaryKey = 'Id_Peminjaman';
+
     /**
      * Mengizinkan mass assignment untuk semua atribut kecuali ID.
      */
-    protected $guarded = ['id'];
+    protected $guarded = ['Id_Peminjaman'];
 
     /**
      * Get the attributes that should be cast.
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'status' => StatusPeminjaman::class,
-            'tgl_booking' => 'datetime',
-            'tgl_disetujui' => 'datetime',
-            'tgl_jatuh_tempo' => 'date',
-            'tgl_selesai' => 'datetime',
-        ];
-    }
-
-    /**
-     * Relasi: Satu peminjaman dimiliki oleh satu user.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Relasi: Satu peminjaman terkait dengan satu buku.
-     */
-    public function book(): BelongsTo
-    {
-        return $this->belongsTo(Book::class);
-    }
+      * @return array<string, string>
+      */
+     protected function casts(): array
+     {
+         return [
+             'Status_Peminjaman' => StatusPeminjaman::class,
+             'Tanggal_Pinjam' => 'datetime',
+             'Tanggal_Disetujui' => 'datetime',
+             'Tanggal_Jatuh_Tempo' => 'date',
+             'Tanggal_Selesai' => 'datetime',
+         ];
+     }
+ 
+     /**
+      * Relasi: Satu peminjaman dimiliki oleh satu user.
+      */
+     public function user(): BelongsTo
+     {
+         return $this->belongsTo(User::class, 'Id_Pengguna');
+     }
+ 
+     /**
+      * Relasi: Satu peminjaman terkait dengan satu buku.
+      */
+     public function book(): BelongsTo
+     {
+         return $this->belongsTo(Book::class, 'Id_Buku');
+     }
 }

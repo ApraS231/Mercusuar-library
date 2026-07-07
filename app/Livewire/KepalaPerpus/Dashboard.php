@@ -25,18 +25,18 @@ class Dashboard extends Component
     public function mount()
     {
         $this->jumlahBuku = Book::count();
-        $this->jumlahAnggota = User::where('role', \App\Enums\Role::User)->count();
+        $this->jumlahAnggota = User::where('Peran_Akses_Pengguna', \App\Enums\Role::User)->count();
         $this->totalPeminjaman = Peminjaman::count();
-        $this->pinjamanAktif = Peminjaman::whereIn('status', [StatusPeminjaman::Pinjam, StatusPeminjaman::Disetujui])->count();
-        $this->peminjamanSelesai = Peminjaman::where('status', StatusPeminjaman::Selesai)->count();
-        $this->peminjamanOverdue = Peminjaman::where('status', StatusPeminjaman::Overdue)->count();
+        $this->pinjamanAktif = Peminjaman::whereIn('Status_Peminjaman', [StatusPeminjaman::Pinjam, StatusPeminjaman::Disetujui])->count();
+        $this->peminjamanSelesai = Peminjaman::where('Status_Peminjaman', StatusPeminjaman::Selesai)->count();
+        $this->peminjamanOverdue = Peminjaman::where('Status_Peminjaman', StatusPeminjaman::Overdue)->count();
         
         if ($this->totalPeminjaman > 0) {
             $this->rasioKeterlambatan = round(($this->peminjamanOverdue / $this->totalPeminjaman) * 100, 1);
         }
 
         $this->recentLoans = Peminjaman::with(['user', 'book'])
-            ->latest('tgl_booking')
+            ->latest('Tanggal_Pinjam')
             ->limit(5)
             ->get();
     }

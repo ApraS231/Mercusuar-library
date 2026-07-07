@@ -15,7 +15,7 @@ class MyLoans extends Component
 
     public function mount()
     {
-        if (auth()->user()->role !== \App\Enums\Role::User) {
+        if (auth()->user()->Peran_Akses_Pengguna !== \App\Enums\Role::User) {
             abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
     }
@@ -30,18 +30,18 @@ class MyLoans extends Component
 
     public function render()
     {
-        $query = Peminjaman::where('user_id', auth()->id())
+        $query = Peminjaman::where('Id_Pengguna', auth()->id())
             ->with('book')
-            ->latest('tgl_booking');
+            ->latest('Tanggal_Pinjam');
 
         if ($this->activeTab === 'aktif') {
-            $query->whereIn('status', [
+            $query->whereIn('Status_Peminjaman', [
                 StatusPeminjaman::Pinjam,
                 StatusPeminjaman::Disetujui,
                 StatusPeminjaman::Overdue
             ]);
         } else {
-            $query->whereIn('status', [
+            $query->whereIn('Status_Peminjaman', [
                 StatusPeminjaman::Selesai,
                 StatusPeminjaman::Ditolak
             ]);

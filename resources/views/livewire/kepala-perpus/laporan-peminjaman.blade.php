@@ -129,29 +129,29 @@
 
                                 {{-- Anggota --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->user->name ?? 'User Dihapus' }}</div>
-                                    <div class="text-xs text-[#49454F]">{{ $peminjaman->user->email ?? '-' }}</div>
+                                    <div class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->user->Nama_Pengguna ?? 'User Dihapus' }}</div>
+                                    <div class="text-xs text-[#49454F]">{{ $peminjaman->user->Email_Pengguna ?? '-' }}</div>
                                 </td>
 
                                 {{-- Tanggal Pinjam (Booking) --}}
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-[#1D1B20]">
-                                    {{ $peminjaman->tgl_booking ? $peminjaman->tgl_booking->format('d M Y') : '-' }}
+                                    {{ $peminjaman->Tanggal_Pinjam ? $peminjaman->Tanggal_Pinjam->format('d M Y') : '-' }}
                                 </td>
 
                                 {{-- Tanggal Disetujui --}}
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-[#1D1B20]">
-                                    {{ $peminjaman->tgl_disetujui ? $peminjaman->tgl_disetujui->format('d M Y') : '-' }}
+                                    {{ $peminjaman->Tanggal_Disetujui ? $peminjaman->Tanggal_Disetujui->format('d M Y') : '-' }}
                                 </td>
 
                                 {{-- Tanggal Selesai --}}
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-[#1D1B20]">
-                                    {{ $peminjaman->tgl_selesai ? $peminjaman->tgl_selesai->format('d M Y') : '-' }}
+                                    {{ $peminjaman->Tanggal_Selesai ? $peminjaman->Tanggal_Selesai->format('d M Y') : '-' }}
                                 </td>
 
                                 {{-- Status --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @php
-                                        $statusEnum = $peminjaman->status;
+                                        $statusEnum = $peminjaman->Status_Peminjaman;
                                         $badgeClass = match($statusEnum) {
                                             \App\Enums\StatusPeminjaman::Pinjam => 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2]',
                                             \App\Enums\StatusPeminjaman::Disetujui => 'bg-[#E3F2FD] text-[#1565C0] border-[#BBDEFB]',

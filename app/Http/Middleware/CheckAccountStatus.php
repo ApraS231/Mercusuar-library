@@ -13,7 +13,7 @@ class CheckAccountStatus
     public function handle(Request $request, Closure $next): Response
     {
         // Jika user login DAN statusnya Dibatasi/Nonaktif
-        if (Auth::check() && Auth::user()->status_akun !== StatusAkun::Aktif) {
+        if (Auth::check() && Auth::user()->Status_Akun_Pengguna !== StatusAkun::Aktif) {
             
             // Opsional: Logout paksa
             // Auth::logout();

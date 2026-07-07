@@ -25,7 +25,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $component = Volt::test('pages.auth.login')
-            ->set('email', $user->email)
+            ->set('email', $user->Email_Pengguna)
             ->set('password', 'password');
 
         $component->call('login');
@@ -42,7 +42,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $component = Volt::test('pages.auth.login')
-            ->set('email', $user->email)
+            ->set('email', $user->Email_Pengguna)
             ->set('password', 'wrong-password');
 
         $component->call('login');

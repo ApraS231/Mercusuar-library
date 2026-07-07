@@ -23,7 +23,7 @@ class LaporanPeminjaman extends Component
 
     public function render()
     {
-        $query = Peminjaman::with(['user', 'book'])->latest('tgl_booking');
+        $query = Peminjaman::with(['user', 'book'])->latest('Tanggal_Pinjam');
 
         // Filter search (Judul Buku atau Nama User)
         if ($this->search) {
@@ -31,24 +31,24 @@ class LaporanPeminjaman extends Component
                 $q->whereHas('book', function($qb) {
                     $qb->where('judul', 'like', '%' . $this->search . '%');
                 })->orWhereHas('user', function($qu) {
-                    $qu->where('name', 'like', '%' . $this->search . '%');
+                    $qu->where('Nama_Pengguna', 'like', '%' . $this->search . '%');
                 });
             });
         }
 
         // Filter tanggal booking
         if ($this->startDate) {
-            $query->whereDate('tgl_booking', '>=', $this->startDate);
+            $query->whereDate('Tanggal_Pinjam', '>=', $this->startDate);
         }
         if ($this->endDate) {
-            $query->whereDate('tgl_booking', '<=', $this->endDate);
+            $query->whereDate('Tanggal_Pinjam', '<=', $this->endDate);
         }
 
         $stats = [
             'total' => Peminjaman::count(),
-            'selesai' => Peminjaman::where('status', \App\Enums\StatusPeminjaman::Selesai)->count(),
-            'overdue' => Peminjaman::where('status', \App\Enums\StatusPeminjaman::Overdue)->count(),
-            'aktif' => Peminjaman::whereIn('status', [\App\Enums\StatusPeminjaman::Pinjam, \App\Enums\StatusPeminjaman::Disetujui])->count(),
+            'selesai' => Peminjaman::where('Status_Peminjaman', \App\Enums\StatusPeminjaman::Selesai)->count(),
+            'overdue' => Peminjaman::where('Status_Peminjaman', \App\Enums\StatusPeminjaman::Overdue)->count(),
+            'aktif' => Peminjaman::whereIn('Status_Peminjaman', [\App\Enums\StatusPeminjaman::Pinjam, \App\Enums\StatusPeminjaman::Disetujui])->count(),
         ];
 
         $peminjamans = $query->paginate(15);
@@ -64,7 +64,7 @@ class LaporanPeminjaman extends Component
      */
     public function exportCSV()
     {
-        $query = Peminjaman::with(['user', 'book'])->latest('tgl_booking');
+        $query = Peminjaman::with(['user', 'book'])->latest('Tanggal_Pinjam');
 
         // Apply filters
         if ($this->search) {
@@ -72,16 +72,16 @@ class LaporanPeminjaman extends Component
                 $q->whereHas('book', function($qb) {
                     $qb->where('judul', 'like', '%' . $this->search . '%');
                 })->orWhereHas('user', function($qu) {
-                    $qu->where('name', 'like', '%' . $this->search . '%');
+                    $qu->where('Nama_Pengguna', 'like', '%' . $this->search . '%');
                 });
             });
         }
 
         if ($this->startDate) {
-            $query->whereDate('tgl_booking', '>=', $this->startDate);
+            $query->whereDate('Tanggal_Pinjam', '>=', $this->startDate);
         }
         if ($this->endDate) {
-            $query->whereDate('tgl_booking', '<=', $this->endDate);
+            $query->whereDate('Tanggal_Pinjam', '<=', $this->endDate);
         }
 
         $peminjamans = $query->get();
@@ -116,15 +116,15 @@ class LaporanPeminjaman extends Component
             // CSV Data
             foreach ($peminjamans as $row) {
                 fputcsv($file, [
-                    $row->id,
+                    $row->Id_Peminjaman,
                     $row->book->judul ?? 'Buku Dihapus',
                     $row->book->penulis ?? '-',
-                    $row->user->name ?? 'User Dihapus',
-                    $row->user->email ?? '-',
-                    $row->tgl_booking ? $row->tgl_booking->format('Y-m-d H:i:s') : '-',
-                    $row->tgl_disetujui ? $row->tgl_disetujui->format('Y-m-d H:i:s') : '-',
-                    $row->tgl_selesai ? $row->tgl_selesai->format('Y-m-d H:i:s') : '-',
-                    $row->status->value
+                    $row->user->Nama_Pengguna ?? 'User Dihapus',
+                    $row->user->Email_Pengguna ?? '-',
+                    $row->Tanggal_Pinjam ? $row->Tanggal_Pinjam->format('Y-m-d H:i:s') : '-',
+                    $row->Tanggal_Disetujui ? $row->Tanggal_Disetujui->format('Y-m-d H:i:s') : '-',
+                    $row->Tanggal_Selesai ? $row->Tanggal_Selesai->format('Y-m-d H:i:s') : '-',
+                    $row->Status_Peminjaman->value
                 ]);
             }
 

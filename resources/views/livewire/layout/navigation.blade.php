@@ -46,11 +46,13 @@ new class extends Component
                 </div>
 
                 <div class="hidden space-x-4 sm:-my-px sm:ms-10 sm:flex sm:items-center">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard*')" wire:navigate>
-                        {{ __('Katalog') }}
-                    </x-nav-link>
+                    @if(auth()->user()->Peran_Akses_Pengguna !== \App\Enums\Role::Admin)
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard*')" wire:navigate>
+                            {{ __('Katalog') }}
+                        </x-nav-link>
+                    @endif
                     
-                    @if(auth()->user()->role === \App\Enums\Role::Admin)
+                    @if(auth()->user()->Peran_Akses_Pengguna === \App\Enums\Role::Admin)
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')" wire:navigate>
                             {{ __('Admin Panel') }}
                         </x-nav-link>
@@ -66,10 +68,10 @@ new class extends Component
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center gap-3 px-3 py-1.5 border border-[#E7E0EC] text-sm font-medium rounded-full text-[#1D1B20] bg-white hover:bg-[#F3EDF7] transition ease-in-out duration-150 focus:outline-none focus:ring-2 focus:ring-[#6750A4] focus:ring-offset-2">
-                            <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="pl-1"></div>
+                            <div x-data="{{ json_encode(['name' => auth()->user()->Nama_Pengguna]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="pl-1"></div>
 
                             <div class="w-8 h-8 rounded-full bg-[#E8DEF8] flex items-center justify-center text-[#6750A4] font-bold text-xs">
-                                {{ substr(auth()->user()->name, 0, 1) }}
+                                {{ substr(auth()->user()->Nama_Pengguna, 0, 1) }}
                             </div>
                         </button>
                     </x-slot>
@@ -101,11 +103,13 @@ new class extends Component
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white/95 backdrop-blur-xl border-b border-[#E7E0EC]">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard*')" wire:navigate>
-                {{ __('Katalog') }}
-            </x-responsive-nav-link>
+            @if(auth()->user()->Peran_Akses_Pengguna !== \App\Enums\Role::Admin)
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard*')" wire:navigate>
+                    {{ __('Katalog') }}
+                </x-responsive-nav-link>
+            @endif
             
-            @if(auth()->user()->role === \App\Enums\Role::Admin)
+            @if(auth()->user()->Peran_Akses_Pengguna === \App\Enums\Role::Admin)
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')" wire:navigate>
                     {{ __('Admin Panel') }}
                 </x-responsive-nav-link>
@@ -118,8 +122,8 @@ new class extends Component
 
         <div class="pt-4 pb-1 border-t border-[#E7E0EC]">
             <div class="px-4">
-                <div class="font-medium text-base text-[#1D1B20]" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-[#49454F]">{{ auth()->user()->email }}</div>
+                <div class="font-medium text-base text-[#1D1B20]" x-data="{{ json_encode(['name' => auth()->user()->Nama_Pengguna]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
+                <div class="font-medium text-sm text-[#49454F]">{{ auth()->user()->Email_Pengguna }}</div>
             </div>
 
             <div class="mt-3 space-y-1">

@@ -14,19 +14,21 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $primaryKey = 'Id_pengguna';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role', //
-        'status_akun', //
-        'alamat', //
-        'no_telepon', //
+        'Nama_Pengguna',
+        'Email_Pengguna',
+        'Kata_Sandi_Pengguna',
+        'Peran_Akses_Pengguna',
+        'Status_Akun_Pengguna',
+        'Alamat_Pengguna',
+        'No_Telepon_Pengguna',
     ];
 
     /**
@@ -35,7 +37,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'Kata_Sandi_Pengguna',
         'remember_token',
     ];
 
@@ -48,10 +50,31 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'role' => Role::class, //
-            'status_akun' => StatusAkun::class, //
+            'Kata_Sandi_Pengguna' => 'hashed',
+            'Peran_Akses_Pengguna' => Role::class,
+            'Status_Akun_Pengguna' => StatusAkun::class,
         ];
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->Kata_Sandi_Pengguna;
+    }
+
+    /**
+     * Override standard email attribute for password resets.
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->Email_Pengguna;
+    }
+
+    /**
+     * Override standard email attribute for verification.
+     */
+    public function getEmailForVerification()
+    {
+        return $this->Email_Pengguna;
     }
 
     /**
@@ -59,7 +82,7 @@ class User extends Authenticatable
      */
     public function peminjamans(): HasMany
     {
-        return $this->hasMany(Peminjaman::class);
+        return $this->hasMany(Peminjaman::class, 'Id_Pengguna');
     }
 
     /**
@@ -67,6 +90,6 @@ class User extends Authenticatable
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class, 'Id_Pengguna'); // we don't strictly have to change reviews but good practice
     }
 }

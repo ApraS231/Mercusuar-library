@@ -46,7 +46,7 @@
                     <div class="mb-8">
                         @if ($book->category)
                             <span class="inline-block py-1 px-3 rounded-full bg-[#E8DEF8] text-[#1D1B20] text-xs font-medium mb-4">
-                                {{ $book->category->nama_kategori }}
+                                {{ $book->category->Nama_kategori }}
                             </span>
                         @endif
                         <h1 class="text-3xl md:text-4xl font-medium text-[#1D1B20] mb-2 tracking-tight">{{ $book->judul }}</h1>
@@ -119,10 +119,10 @@
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-[#E8DEF8] flex items-center justify-center text-[#6750A4] font-medium text-sm">
-                                    {{ substr($review->user->name, 0, 1) }}
+                                    {{ substr($review->user->Nama_Pengguna, 0, 1) }}
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-[#1D1B20]">{{ $review->user->name }}</p>
+                                    <p class="text-sm font-medium text-[#1D1B20]">{{ $review->user->Nama_Pengguna }}</p>
                                     <p class="text-xs text-[#49454F]">{{ $review->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>

@@ -11,17 +11,19 @@ class Book extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'Id_Buku';
+
     /**
      * Mengizinkan mass assignment untuk semua atribut kecuali ID.
      */
-    protected $guarded = ['id'];
+    protected $guarded = ['Id_Buku'];
 
     /**
      * Relasi: Satu buku bisa ada di banyak transaksi peminjaman.
      */
     public function peminjamans(): HasMany
     {
-        return $this->hasMany(Peminjaman::class);
+        return $this->hasMany(Peminjaman::class, 'Id_Buku');
     }
 
     /**
@@ -29,7 +31,7 @@ class Book extends Model
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class, 'Id_Buku');
     }
 
     /**
@@ -37,7 +39,7 @@ class Book extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'Id_kategori');
     }
 
     /**

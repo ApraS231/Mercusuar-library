@@ -14,17 +14,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // [cite: 78]
-            $table->string('name'); // [cite: 79]
-            $table->string('email')->unique(); // [cite: 80]
+            $table->id('Id_pengguna'); 
+            $table->string('Nama_Pengguna', 20); 
+            $table->string('Email_Pengguna', 20)->unique(); 
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password'); // [cite: 81]
-            $table->string('role')->default(Role::User->value); // [cite: 82]
-            $table->string('status_akun')->default(StatusAkun::Aktif->value); // [cite: 83]
-            $table->text('alamat')->nullable(); // [cite: 84]
-            $table->string('no_telepon')->nullable(); // [cite: 85]
-            $table->rememberToken(); // [cite: 86]
-            $table->timestamps(); // [cite: 86]
+            $table->string('Kata_Sandi_Pengguna', 255); 
+            $table->string('Peran_Akses_Pengguna', 15)->default(Role::User->value); 
+            $table->string('Status_Akun_Pengguna', 12)->default(StatusAkun::Aktif->value); 
+            $table->text('Alamat_Pengguna')->nullable(); 
+            $table->string('No_Telepon_Pengguna', 12)->nullable(); 
+            $table->rememberToken(); 
+            $table->timestamps(); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

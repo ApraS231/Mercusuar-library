@@ -49,7 +49,7 @@ class ListUsers extends Component
 
         $user = User::find($userId);
         if ($user) {
-            $user->update(['role' => $newRole]);
+            $user->update(['Peran_Akses_Pengguna' => $newRole]);
             session()->flash('success', 'Role user berhasil diperbarui.');
         }
     }
@@ -73,7 +73,7 @@ class ListUsers extends Component
 
         $user = User::find($userId);
         if ($user) {
-            $user->update(['status_akun' => $newStatus]);
+            $user->update(['Status_Akun_Pengguna' => $newStatus]);
             session()->flash('success', 'Status akun berhasil diperbarui.');
         }
     }
@@ -84,12 +84,12 @@ class ListUsers extends Component
             ->when($this->search, function ($query) {
                 // Pastikan pencarian di dalam group ()
                 $query->where(function ($q) {
-                    $q->where('name', 'like', '%'.$this->search.'%')
-                      ->orWhere('email', 'like', '%'.$this->search.'%');
+                    $q->where('Nama_Pengguna', 'like', '%'.$this->search.'%')
+                      ->orWhere('Email_Pengguna', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->filterRole !== 'all', function ($query) {
-                $query->where('role', $this->filterRole);
+                $query->where('Peran_Akses_Pengguna', $this->filterRole);
             });
 
         return view('livewire.admin.users.list-users', [

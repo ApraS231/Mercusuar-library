@@ -41,9 +41,9 @@ class ManagePeminjaman extends Component
     {
         $peminjaman = Peminjaman::findOrFail($id);
         $peminjaman->update([
-            'status' => StatusPeminjaman::Disetujui,
-            'tgl_disetujui' => now(),
-            'tgl_jatuh_tempo' => now()->addDays(7)
+            'Status_Peminjaman' => StatusPeminjaman::Disetujui,
+            'Tanggal_Disetujui' => now(),
+            'Tanggal_Jatuh_Tempo' => now()->addDays(7)
         ]);
         session()->flash('success', 'Booking telah disetujui. Silakan serahkan buku kepada peminjam.');
     }
@@ -57,7 +57,7 @@ class ManagePeminjaman extends Component
         $peminjaman = Peminjaman::with('book')->findOrFail($id);
         
         // 1. Ubah status
-        $peminjaman->update(['status' => StatusPeminjaman::Ditolak]);
+        $peminjaman->update(['Status_Peminjaman' => StatusPeminjaman::Ditolak]);
         
         // 2. Kembalikan stok
         $peminjaman->book->increment('stok_tersedia');
@@ -80,8 +80,8 @@ class ManagePeminjaman extends Component
 
         // 1. & 2. Ubah status dan catat tanggal selesai
         $peminjaman->update([
-            'status' => StatusPeminjaman::Selesai,
-            'tgl_selesai' => now()
+            'Status_Peminjaman' => StatusPeminjaman::Selesai,
+            'Tanggal_Selesai' => now()
         ]);
 
         // 3. Kembalikan stok
@@ -92,12 +92,12 @@ class ManagePeminjaman extends Component
         
         // Cek apakah user ini MASIH punya pinjaman lain yang 'Overdue'
         $hasOtherOverdueLoans = $user->peminjamans()
-                                     ->where('status', StatusPeminjaman::Overdue)
+                                     ->where('Status_Peminjaman', StatusPeminjaman::Overdue)
                                      ->exists();
         
         // Jika TIDAK ADA lagi pinjaman overdue, aktifkan akunnya
         if (!$hasOtherOverdueLoans) {
-            $user->update(['status_akun' => StatusAkun::Aktif]);
+            $user->update(['Status_Akun_Pengguna' => StatusAkun::Aktif]);
         }
 
         session()->flash('success', 'Peminjaman telah diselesaikan dan stok diperbarui.');
@@ -108,8 +108,8 @@ class ManagePeminjaman extends Component
         // Ambil data peminjaman
         $peminjamans = Peminjaman::query()
             ->with('user', 'book') // Eager load data user dan buku
-            ->where('status', $this->filterStatus) // Filter berdasarkan status
-            ->latest('tgl_booking') // Urutkan
+            ->where('Status_Peminjaman', $this->filterStatus) // Filter berdasarkan status
+            ->latest('Tanggal_Pinjam') // Urutkan
             ->paginate(10); // Paginasi
 
         return view('livewire.admin.transactions.manage-peminjaman', [

@@ -18,11 +18,11 @@ class LaporanPeminjamanTest extends TestCase
     public function test_kepala_perpustakaan_can_access_laporan_peminjaman(): void
     {
         $kepala = User::create([
-            'name' => 'Kepala Perpustakaan',
-            'email' => 'kepala@mercusuar.com',
-            'password' => bcrypt('password'),
-            'role' => Role::KepalaPerpus,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Kepala Perpustakaan',
+            'Email_Pengguna' => 'kepala@mercusuar.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::KepalaPerpus,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
         $response = $this->actingAs($kepala)->get('/kepala-perpus/laporan-peminjaman');
@@ -36,11 +36,11 @@ class LaporanPeminjamanTest extends TestCase
     public function test_user_cannot_access_laporan_peminjaman(): void
     {
         $user = User::create([
-            'name' => 'Andi Anggota',
-            'email' => 'andi@gmail.com',
-            'password' => bcrypt('password'),
-            'role' => Role::User,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Andi Anggota',
+            'Email_Pengguna' => 'andi@gmail.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::User,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
         $response = $this->actingAs($user)->get('/kepala-perpus/laporan-peminjaman');
@@ -54,11 +54,11 @@ class LaporanPeminjamanTest extends TestCase
     public function test_admin_cannot_access_laporan_peminjaman(): void
     {
         $admin = User::create([
-            'name' => 'Admin Mercusuar',
-            'email' => 'admin@mercusuar.com',
-            'password' => bcrypt('password'),
-            'role' => Role::Admin,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Admin Mercusuar',
+            'Email_Pengguna' => 'admin@mercusuar.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::Admin,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
         $response = $this->actingAs($admin)->get('/kepala-perpus/laporan-peminjaman');
@@ -72,11 +72,11 @@ class LaporanPeminjamanTest extends TestCase
     public function test_kepala_perpustakaan_can_export_laporan_to_csv(): void
     {
         $kepala = User::create([
-            'name' => 'Kepala Perpustakaan',
-            'email' => 'kepala@mercusuar.com',
-            'password' => bcrypt('password'),
-            'role' => Role::KepalaPerpus,
-            'status_akun' => StatusAkun::Aktif,
+            'Nama_Pengguna' => 'Kepala Perpustakaan',
+            'Email_Pengguna' => 'kepala@mercusuar.com',
+            'Kata_Sandi_Pengguna' => bcrypt('password'),
+            'Peran_Akses_Pengguna' => Role::KepalaPerpus,
+            'Status_Akun_Pengguna' => StatusAkun::Aktif,
         ]);
 
         $response = \Livewire\Livewire::actingAs($kepala)

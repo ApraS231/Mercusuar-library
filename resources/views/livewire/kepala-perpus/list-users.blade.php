@@ -55,11 +55,11 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div class="h-10 w-10 rounded-full bg-[#E8DEF8] flex items-center justify-center text-[#6750A4] font-bold text-sm shadow-sm">
-                                            {{ substr($user->name, 0, 1) }}
+                                            {{ substr($user->Nama_Pengguna, 0, 1) }}
                                         </div>
                                         <div>
-                                            <div class="text-sm font-bold text-[#1D1B20]">{{ $user->name }}</div>
-                                            <div class="text-xs text-[#49454F]">{{ $user->email }}</div>
+                                            <div class="text-sm font-bold text-[#1D1B20]">{{ $user->Nama_Pengguna }}</div>
+                                            <div class="text-xs text-[#49454F]">{{ $user->Email_Pengguna }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -67,7 +67,7 @@
                                 {{-- Status Akun --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @php
-                                        $statusEnum = $user->status_akun;
+                                        $statusEnum = $user->Status_Akun_Pengguna;
                                         $badgeClass = $statusEnum == \App\Enums\StatusAkun::Dibatasi
                                             ? 'bg-[#FFF8E1] text-[#F57C00] border-[#FFE0B2]'
                                             : 'bg-[#E6F4EA] text-[#146C2E] border-[#C3EED4]';

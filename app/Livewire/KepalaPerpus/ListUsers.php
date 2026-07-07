@@ -28,16 +28,16 @@ class ListUsers extends Component
 
     public function render()
     {
-        $query = User::where('role', \App\Enums\Role::User)
+        $query = User::where('Peran_Akses_Pengguna', \App\Enums\Role::User)
             ->withCount([
                 'peminjamans as active_loans_count' => function ($q) {
-                    $q->whereIn('status', [
+                    $q->whereIn('Status_Peminjaman', [
                         \App\Enums\StatusPeminjaman::Pinjam,
                         \App\Enums\StatusPeminjaman::Disetujui
                     ]);
                 },
                 'peminjamans as overdue_loans_count' => function ($q) {
-                    $q->where('status', \App\Enums\StatusPeminjaman::Overdue);
+                    $q->where('Status_Peminjaman', \App\Enums\StatusPeminjaman::Overdue);
                 },
                 'peminjamans as total_loans_count'
             ]);
@@ -45,14 +45,14 @@ class ListUsers extends Component
         // Search name/email
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%');
+                $q->where('Nama_Pengguna', 'like', '%' . $this->search . '%')
+                  ->orWhere('Email_Pengguna', 'like', '%' . $this->search . '%');
             });
         }
 
         // Filter status akun
         if ($this->filterStatus !== 'all') {
-            $query->where('status_akun', $this->filterStatus);
+            $query->where('Status_Akun_Pengguna', $this->filterStatus);
         }
 
         $users = $query->latest('created_at')->paginate(15);

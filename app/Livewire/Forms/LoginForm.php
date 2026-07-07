@@ -84,11 +84,11 @@ class Login extends Component
     {
         $user = Auth::user();
 
-        if ($user->role === Role::Admin) {
+        if ($user->Peran_Akses_Pengguna === Role::Admin) {
             return '/admin/dashboard';
         }
 
-        if ($user->role === Role::KepalaPerpus) {
+        if ($user->Peran_Akses_Pengguna === Role::KepalaPerpus) {
             return '/kepala-perpus/dashboard';
         }
 

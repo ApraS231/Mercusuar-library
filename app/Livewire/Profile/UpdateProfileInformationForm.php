@@ -22,12 +22,12 @@ class UpdateProfileInformationForm extends Component
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $this->name = Auth::user()->Nama_Pengguna;
+        $this->email = Auth::user()->Email_Pengguna;
 
         // --- DITAMBAHKAN ---
-        $this->alamat = Auth::user()->alamat;
-        $this->no_telepon = Auth::user()->no_telepon;
+        $this->alamat = Auth::user()->Alamat_Pengguna;
+        $this->no_telepon = Auth::user()->No_Telepon_Pengguna;
         // --- AKHIR TAMBAHAN ---
     }
 
@@ -37,14 +37,19 @@ class UpdateProfileInformationForm extends Component
 
         $validated = $this->validate();
 
-        if ($user->email !== $validated['email']) {
+        if ($user->Email_Pengguna !== $validated['email']) {
             $user->email_verified_at = null;
         }
 
-        $user->fill($validated);
+        $user->fill([
+            'Nama_Pengguna' => $validated['name'],
+            'Email_Pengguna' => $validated['email'],
+            'Alamat_Pengguna' => $validated['alamat'],
+            'No_Telepon_Pengguna' => $validated['no_telepon'],
+        ]);
         $user->save();
 
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated', name: $user->Nama_Pengguna);
     }
 
     /**
@@ -61,12 +66,12 @@ class UpdateProfileInformationForm extends Component
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore(Auth::user())],
+            'name' => ['required', 'string', 'max:20'],
+            'email' => ['required', 'string', 'email', 'max:20', Rule::unique('users', 'Email_Pengguna')->ignore(Auth::user()->Id_pengguna, 'Id_pengguna')],
             'alamat' => ['nullable', 'string', 'max:1000'],
 
             // PERBAIKAN: Pastikan Numeric dan minimal digit
-            'no_telepon' => ['nullable', 'numeric', 'digits_between:10,15'],
+            'no_telepon' => ['nullable', 'numeric', 'digits_between:10,12'],
         ];
     }
 

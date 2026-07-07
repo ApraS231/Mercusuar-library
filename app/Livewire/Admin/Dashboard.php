@@ -27,10 +27,10 @@ class Dashboard extends Component
     public function mount()
     {
         // Ambil data sesuai logika di ROADMAP
-        $this->pendingLoans = Peminjaman::where('status', StatusPeminjaman::Pinjam)->count();
+        $this->pendingLoans = Peminjaman::where('Status_Peminjaman', StatusPeminjaman::Pinjam)->count();
         $this->jumlahBuku = Book::count();
-        $this->jumlahUserAktif = User::where('status_akun', StatusAkun::Aktif)->count();
-        $this->jumlahOverdue = Peminjaman::where('status', StatusPeminjaman::Overdue)->count();
+        $this->jumlahUserAktif = User::where('Status_Akun_Pengguna', StatusAkun::Aktif)->count();
+        $this->jumlahOverdue = Peminjaman::where('Status_Peminjaman', StatusPeminjaman::Overdue)->count();
     }
     
     /**

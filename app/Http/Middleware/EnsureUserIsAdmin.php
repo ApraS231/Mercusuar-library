@@ -18,7 +18,7 @@ class EnsureUserIsAdmin
     {
         // 2. Cek jika user terautentikasi DAN memiliki role admin
         //    Ini sesuai dengan rencana Anda [cite: 64]
-        if ($request->user() && $request->user()->role === Role::Admin) {
+        if ($request->user() && $request->user()->Peran_Akses_Pengguna === Role::Admin) {
             
             // 3. Jika admin, izinkan request
             return $next($request);

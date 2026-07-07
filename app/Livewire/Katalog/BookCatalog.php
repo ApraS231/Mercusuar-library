@@ -20,7 +20,7 @@ class BookCatalog extends Component
 
     public function mount()
     {
-        if (auth()->user()->role === \App\Enums\Role::KepalaPerpus) {
+        if (in_array(auth()->user()->Peran_Akses_Pengguna, [\App\Enums\Role::KepalaPerpus, \App\Enums\Role::Admin])) {
             abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
     }
@@ -36,14 +36,14 @@ class BookCatalog extends Component
             
             // Filter Kategori
             ->when($this->selectedCategory, function($q) {
-                $q->where('category_id', $this->selectedCategory);
+                $q->where('Id_kategori', $this->selectedCategory);
             })
             // Filter Pencarian
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('judul', 'like', '%'.$this->search.'%')
                       ->orWhere('penulis', 'like', '%'.$this->search.'%')
-                      ->orWhere('isbn', 'like', '%'.$this->search.'%');
+                      ->orWhere('ISBN', 'like', '%'.$this->search.'%');
                 });
             })
             ->latest('created_at')

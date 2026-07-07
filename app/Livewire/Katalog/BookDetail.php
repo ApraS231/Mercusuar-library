@@ -25,7 +25,7 @@ class BookDetail extends Component
 
     public function mount(Book $book)
     {
-        if (auth()->user()->role === \App\Enums\Role::KepalaPerpus) {
+        if (in_array(auth()->user()->Peran_Akses_Pengguna, [\App\Enums\Role::KepalaPerpus, \App\Enums\Role::Admin])) {
             abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
 
@@ -51,15 +51,15 @@ class BookDetail extends Component
         }
 
         // Cek 2: Status Akun Aktif
-        if ($user->status_akun !== StatusAkun::Aktif) {
+        if ($user->Status_Akun_Pengguna !== StatusAkun::Aktif) {
             session()->flash('error', 'Akun Anda sedang dibatasi (overdue). Anda tidak dapat meminjam buku baru.');
             return;
         }
 
         // Cek 3: Batas Peminjaman Aktif (Status 'Disetujui' atau 'Pinjam') < 3
         // Disetujui berarti buku sedang dipinjam oleh user di tangan mereka. Pinjam berarti menunggu approval.
-        $pinjamanAktif = Peminjaman::where('user_id', $user->id)
-                            ->whereIn('status', [StatusPeminjaman::Pinjam, StatusPeminjaman::Disetujui])
+        $pinjamanAktif = Peminjaman::where('Id_Pengguna', $user->Id_pengguna)
+                            ->whereIn('Status_Peminjaman', [StatusPeminjaman::Pinjam, StatusPeminjaman::Disetujui])
                             ->count();
         if ($pinjamanAktif >= 3) {
             session()->flash('error', 'Anda telah mencapai batas maksimum 3 buku yang sedang dipinjam (status "Pinjam" / "Disetujui").');
@@ -67,9 +67,9 @@ class BookDetail extends Component
         }
 
         // Cek 4: User sudah me-request buku ini (status Pinjam / Disetujui)
-        $sudahRequest = Peminjaman::where('user_id', $user->id)
-                            ->where('book_id', $this->book->id)
-                            ->whereIn('status', [
+        $sudahRequest = Peminjaman::where('Id_Pengguna', $user->Id_pengguna)
+                            ->where('Id_Buku', $this->book->Id_Buku)
+                            ->whereIn('Status_Peminjaman', [
                                 StatusPeminjaman::Pinjam, 
                                 StatusPeminjaman::Disetujui
                             ])->exists();
@@ -87,10 +87,10 @@ class BookDetail extends Component
 
                 // 2. Buat data peminjaman baru
                 Peminjaman::create([
-                    'user_id' => $user->id,
-                    'book_id' => $this->book->id,
-                    'status' => StatusPeminjaman::Pinjam,
-                    'tgl_booking' => now(),
+                    'Id_Pengguna' => $user->Id_pengguna,
+                    'Id_Buku' => $this->book->Id_Buku,
+                    'Status_Peminjaman' => StatusPeminjaman::Pinjam,
+                    'Tanggal_Pinjam' => now(),
                 ]);
             });
 
@@ -123,7 +123,7 @@ class BookDetail extends Component
 
         Review::create([
             'user_id' => auth()->id(),
-            'book_id' => $this->book->id,
+            'book_id' => $this->book->Id_Buku,
             'rating' => $this->newReviewRating,
             'komentar' => $this->newReviewComment,
         ]);
@@ -143,14 +143,14 @@ class BookDetail extends Component
         $userId = auth()->id();
         
         // Cek apakah user pernah mengembalikan (Selesai) buku ini
-        $this->sudahPernahPinjam = Peminjaman::where('user_id', $userId)
-                                    ->where('book_id', $this->book->id)
-                                    ->where('status', StatusPeminjaman::Selesai)
+        $this->sudahPernahPinjam = Peminjaman::where('Id_Pengguna', $userId)
+                                    ->where('Id_Buku', $this->book->Id_Buku)
+                                    ->where('Status_Peminjaman', StatusPeminjaman::Selesai)
                                     ->exists();
         
         // Cek apakah user sudah pernah memberi review untuk buku ini
         $this->sudahReview = Review::where('user_id', $userId)
-                                ->where('book_id', $this->book->id)
+                                ->where('book_id', $this->book->Id_Buku)
                                 ->exists();
     }
 
