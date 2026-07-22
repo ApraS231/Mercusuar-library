@@ -50,11 +50,13 @@
                             {{-- Kolom Buku --}}
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <div class="flex items-center gap-3">
-                                    <div class="h-12 w-12 rounded-lg bg-[#F3EDF7] flex items-center justify-center text-[#6750A4] flex-shrink-0">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                    <div class="h-12 w-12 rounded-lg bg-[#F3EDF7] flex items-center justify-center text-[#6750A4] flex-shrink-0 font-bold text-xs">
+                                        #{{ $peminjaman->Id_Buku }}
                                     </div>
                                     <div>
-                                        <div class="text-sm font-bold text-[#1D1B20]">{{ $peminjaman->book->judul ?? 'Buku Dihapus' }}</div>
+                                        <div class="text-sm font-bold text-[#1D1B20]">
+                                            {{ $peminjaman->book->judul ?? 'Buku Dihapus' }}
+                                        </div>
                                         <div class="text-xs text-[#49454F]">{{ $peminjaman->book->penulis ?? '-' }}</div>
                                     </div>
                                 </div>
@@ -63,7 +65,15 @@
                             {{-- Kolom Peminjam --}}
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <div class="text-sm font-medium text-[#1D1B20]">{{ $peminjaman->user->Nama_Pengguna ?? 'User Dihapus' }}</div>
-                                <div class="text-xs text-[#49454F]">{{ $peminjaman->user->Email_Pengguna ?? '-' }}</div>
+                                <div class="text-xs text-[#49454F] flex items-center gap-2 mt-0.5">
+                                    <span>{{ $peminjaman->user->Email_Pengguna ?? '-' }}</span>
+                                    @if(isset($peminjaman->user->No_Telepon_Pengguna) && $peminjaman->user->wa_url)
+                                        <a href="{{ $peminjaman->user->wa_url }}" target="_blank" rel="noopener noreferrer" 
+                                           class="text-[#146C2E] hover:underline font-bold text-xs" title="Contact WA">
+                                            [WA: {{ $peminjaman->user->No_Telepon_Pengguna }}]
+                                        </a>
+                                    @endif
+                                </div>
                             </td>
 
                             {{-- Kolom Tanggal --}}

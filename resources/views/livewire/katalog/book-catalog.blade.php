@@ -121,7 +121,10 @@
                                 <div class="absolute inset-0 bg-gradient-to-t from-[#1D1B20]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                                 {{-- Badges --}}
-                                <div class="absolute top-3 left-3 right-3 flex justify-between items-start">
+                                <div class="absolute top-3 left-3 right-3 flex justify-between items-start gap-1">
+                                    <span class="px-2 py-1 rounded-md bg-[#1D1B20]/80 text-white backdrop-blur text-[9px] font-bold tracking-wider shadow-sm">
+                                        #{{ $book->Id_Buku }}
+                                    </span>
                                     @if($book->category)
                                         <span class="px-2 py-1 rounded-md bg-white/95 backdrop-blur text-[9px] font-bold uppercase tracking-wider text-[#6750A4] shadow-sm">
                                             {{ $book->category->Nama_kategori }}

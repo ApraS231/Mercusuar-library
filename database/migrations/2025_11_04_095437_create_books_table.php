@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('penulis', 30)->nullable(); 
             $table->string('penerbit', 20)->nullable(); 
             $table->text('deskripsi')->nullable(); 
-            $table->string('ISBN', 8)->nullable()->unique(); 
+            $table->string('ISBN', 28)->nullable()->unique(); 
+            $table->integer('tahun_pengadaan')->nullable(); 
             $table->string('gambar_cover', 20)->nullable(); 
             $table->integer('stok_total')->default(1); 
             $table->integer('stok_tersedia')->default(1); 

@@ -56,6 +56,7 @@
                 <thead class="bg-[#F3EDF7]">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Profil Anggota</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#1D1B20] uppercase tracking-wider">No. WhatsApp</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Bergabung</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Role Access</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Status Akun</th>
@@ -77,6 +78,23 @@
                                         <div class="text-xs text-[#49454F]">{{ $user->Email_Pengguna }}</div>
                                     </div>
                                 </div>
+                            </td>
+
+                            {{-- Kolom WhatsApp --}}
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($user->No_Telepon_Pengguna)
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm text-[#1D1B20] font-mono font-medium">{{ $user->No_Telepon_Pengguna }}</span>
+                                        <a href="{{ $user->wa_url }}" target="_blank" rel="noopener noreferrer" 
+                                           class="inline-flex items-center gap-1 text-xs font-bold text-[#146C2E] bg-[#E6F4EA] hover:bg-[#C3EED4] px-2.5 py-1 rounded-full transition-colors"
+                                           title="Chat di WhatsApp">
+                                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-0.999 3.648 3.742-.981z"/></svg>
+                                            WA
+                                        </a>
+                                    </div>
+                                @else
+                                    <span class="text-xs text-[#49454F]">-</span>
+                                @endif
                             </td>
 
                             {{-- Kolom Tanggal --}}

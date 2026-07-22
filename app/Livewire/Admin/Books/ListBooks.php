@@ -21,15 +21,22 @@ class ListBooks extends Component
     public $showModal = false;
     public $bookId; // Null = Create, Ada Isi = Edit
 
+    public $search = '';
     public $judul = '';
     public $category_id = ''; 
     public $penulis = '';
     public $penerbit = '';
     public $deskripsi = '';
     public $isbn = '';
+    public $tahun_pengadaan = '';
     public $stok_total = 1;
     public $gambar_cover_baru;
     public $gambar_cover_lama;
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     /**
      * Aturan validasi dinamis
@@ -42,7 +49,8 @@ class ListBooks extends Component
             'penulis' => 'nullable|string|max:30',
             'penerbit' => 'nullable|string|max:20',
             'deskripsi' => 'nullable|string',
-            'isbn' => 'nullable|string|max:8|unique:books,ISBN,' . $this->bookId . ',Id_Buku',
+            'isbn' => 'nullable|string|max:28|unique:books,ISBN,' . $this->bookId . ',Id_Buku',
+            'tahun_pengadaan' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
             'stok_total' => 'required|integer|min:0',
             'gambar_cover_baru' => 'nullable|image|max:2048',
         ];
@@ -54,6 +62,7 @@ class ListBooks extends Component
     protected $validationAttributes = [
         'category_id' => 'kategori',
         'gambar_cover_baru' => 'gambar cover baru',
+        'tahun_pengadaan' => 'tahun pengadaan',
     ];
 
     /**
@@ -69,6 +78,7 @@ class ListBooks extends Component
             'penerbit', 
             'deskripsi', 
             'isbn', 
+            'tahun_pengadaan',
             'stok_total', 
             'gambar_cover_baru', 
             'gambar_cover_lama'
@@ -99,6 +109,7 @@ class ListBooks extends Component
         $this->penerbit = $book->penerbit;
         $this->deskripsi = $book->deskripsi;
         $this->isbn = $book->ISBN;
+        $this->tahun_pengadaan = $book->tahun_pengadaan;
         $this->stok_total = $book->stok_total;
         $this->gambar_cover_lama = $book->gambar_cover;
 
@@ -128,6 +139,7 @@ class ListBooks extends Component
             'penerbit' => $this->penerbit,
             'deskripsi' => $this->deskripsi,
             'ISBN' => $this->isbn,
+            'tahun_pengadaan' => $this->tahun_pengadaan ?: null,
             'stok_total' => $this->stok_total,
         ];
 
@@ -192,7 +204,13 @@ class ListBooks extends Component
     {
         // Ambil data buku + kategorinya (Eager Loading)
         $books = Book::with('category')
-                    ->latest()
+                    ->when($this->search, function($q) {
+                        $q->where('Id_Buku', 'like', '%'.$this->search.'%')
+                          ->orWhere('judul', 'like', '%'.$this->search.'%')
+                          ->orWhere('penulis', 'like', '%'.$this->search.'%')
+                          ->orWhere('ISBN', 'like', '%'.$this->search.'%');
+                    })
+                    ->latest('Id_Buku')
                     ->paginate(10);
         
         // Ambil semua kategori untuk Dropdown di Modal

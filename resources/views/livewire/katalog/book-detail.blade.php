@@ -44,13 +44,29 @@
                 <div class="lg:col-span-7 p-8 lg:p-12 flex flex-col">
                     
                     <div class="mb-8">
-                        @if ($book->category)
-                            <span class="inline-block py-1 px-3 rounded-full bg-[#E8DEF8] text-[#1D1B20] text-xs font-medium mb-4">
-                                {{ $book->category->Nama_kategori }}
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="inline-block py-1 px-3 rounded-full bg-[#1D1B20] text-white text-xs font-bold">
+                                ID Buku: #{{ $book->Id_Buku }}
                             </span>
-                        @endif
+                            @if ($book->category)
+                                <span class="inline-block py-1 px-3 rounded-full bg-[#E8DEF8] text-[#1D1B20] text-xs font-medium">
+                                    {{ $book->category->Nama_kategori }}
+                                </span>
+                            @endif
+                        </div>
                         <h1 class="text-3xl md:text-4xl font-medium text-[#1D1B20] mb-2 tracking-tight">{{ $book->judul }}</h1>
                         <p class="text-lg text-[#49454F]">oleh <span class="text-[#1D1B20]">{{ $book->penulis }}</span></p>
+                        <div class="flex flex-wrap gap-4 mt-4 text-xs text-[#49454F]">
+                            <div class="bg-[#F3EDF7] px-3 py-1.5 rounded-lg font-mono">
+                                <strong>ISBN:</strong> {{ $book->ISBN ?? '-' }}
+                            </div>
+                            <div class="bg-[#F3EDF7] px-3 py-1.5 rounded-lg">
+                                <strong>Tahun Pengadaan:</strong> {{ $book->tahun_pengadaan ?? '-' }}
+                            </div>
+                            <div class="bg-[#F3EDF7] px-3 py-1.5 rounded-lg">
+                                <strong>Penerbit:</strong> {{ $book->penerbit ?? '-' }}
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Tabs / Description --}}

@@ -41,7 +41,8 @@ class BookCatalog extends Component
             // Filter Pencarian
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('judul', 'like', '%'.$this->search.'%')
+                    $q->where('Id_Buku', 'like', '%'.$this->search.'%')
+                      ->orWhere('judul', 'like', '%'.$this->search.'%')
                       ->orWhere('penulis', 'like', '%'.$this->search.'%')
                       ->orWhere('ISBN', 'like', '%'.$this->search.'%');
                 });

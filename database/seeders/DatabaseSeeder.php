@@ -77,7 +77,8 @@ class DatabaseSeeder extends Seeder
             'penulis' => 'Andrea Hirata',
             'penerbit' => 'Bentang Pustaka',
             'deskripsi' => 'Novel yang menceritakan kehidupan 10 anak dari keluarga miskin yang bersekolah (SD dan SMP) di sebuah sekolah Muhammadiyah di Belitung yang penuh dengan keterbatasan.',
-            'ISBN' => '11111111',
+            'ISBN' => '978-602-291-663-5-2024-001',
+            'tahun_pengadaan' => 2005,
             'stok_total' => 5,
             'stok_tersedia' => 5,
             'gambar_cover' => 'laskar.jpg'
@@ -89,7 +90,8 @@ class DatabaseSeeder extends Seeder
             'penulis' => 'Pramoedya Ananta Toer',
             'penerbit' => 'Hasta Mitra',
             'deskripsi' => 'Salah satu novel dalam tetralogi Pulau Buru. Menceritakan kisah Minke, seorang pemuda pribumi di era kolonial Belanda.',
-            'ISBN' => '22222222',
+            'ISBN' => '978-979-97312-3-4-2024-002',
+            'tahun_pengadaan' => 1980,
             'stok_total' => 3,
             'stok_tersedia' => 3,
             'gambar_cover' => 'bumi.jpg'
@@ -101,7 +103,8 @@ class DatabaseSeeder extends Seeder
             'penulis' => 'Henry Manampiring',
             'penerbit' => 'Kompas Gramedia',
             'deskripsi' => 'Sebuah buku pengantar filsafat Stoa yang relevan dengan kehidupan masa kini, untuk hidup lebih tenang dan mengurangi emosi negatif.',
-            'ISBN' => '33333333',
+            'ISBN' => '978-602-412-518-9-2024-003',
+            'tahun_pengadaan' => 2018,
             'stok_total' => 10,
             'stok_tersedia' => 10,
             'gambar_cover' => 'teras.jpg'
@@ -113,7 +116,8 @@ class DatabaseSeeder extends Seeder
             'penulis' => 'James Clear',
             'penerbit' => 'Penguin Random House',
             'deskripsi' => 'Cara mudah dan teruji untuk membangun kebiasaan baik dan menghilangkan kebiasaan buruk.',
-            'ISBN' => '44444444',
+            'ISBN' => '978-073-521-129-2-2024-004',
+            'tahun_pengadaan' => 2019,
             'stok_total' => 7,
             'stok_tersedia' => 7,
             'gambar_cover' => 'habits.jpg'
@@ -125,7 +129,8 @@ class DatabaseSeeder extends Seeder
             'penulis' => 'Yuval Noah Harari',
             'penerbit' => 'Harper',
             'deskripsi' => 'Buku ini melacak umat manusia dari zaman batu hingga saat ini.',
-            'ISBN' => '55555555',
+            'ISBN' => '978-006-231-609-7-2024-005',
+            'tahun_pengadaan' => 2014,
             'stok_total' => 4,
             'stok_tersedia' => 4,
             'gambar_cover' => 'sapiens.jpg'

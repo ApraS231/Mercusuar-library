@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('Peran_Akses_Pengguna', 15)->default(Role::User->value); 
             $table->string('Status_Akun_Pengguna', 12)->default(StatusAkun::Aktif->value); 
             $table->text('Alamat_Pengguna')->nullable(); 
-            $table->string('No_Telepon_Pengguna', 12)->nullable(); 
+            $table->string('No_Telepon_Pengguna', 20)->nullable(); 
             $table->rememberToken(); 
             $table->timestamps(); 
         });

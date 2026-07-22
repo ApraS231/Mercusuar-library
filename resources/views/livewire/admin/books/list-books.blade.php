@@ -30,15 +30,32 @@
         </div>
     @endif
 
+    {{-- Filter & Search Bar --}}
+    <div class="bg-white border border-[#E7E0EC] p-4 rounded-[24px] shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div class="relative w-full md:w-1/2">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-[#49454F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <input 
+                wire:model.live.debounce.300ms="search" 
+                type="text" 
+                placeholder="Cari ID buku, judul, penulis, atau ISBN..." 
+                class="w-full bg-[#F3EDF7] border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#6750A4] placeholder-[#49454F]/60 transition-shadow"
+            >
+        </div>
+    </div>
+
     {{-- Tabel Data Buku (Card Style) --}}
     <div class="bg-white border border-[#E7E0EC] rounded-[28px] shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full text-left">
                 <thead class="bg-[#F3EDF7] border-b border-[#E7E0EC]">
                     <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-[#1D1B20] uppercase tracking-wider">ID Buku</th>
                         <th class="px-6 py-4 text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Cover</th>
                         <th class="px-6 py-4 text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Info Buku</th>
                         <th class="px-6 py-4 text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Kategori</th>
+                        <th class="px-6 py-4 text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Tahun</th>
                         <th class="px-6 py-4 text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Stok</th>
                         <th class="px-6 py-4 text-right text-xs font-bold text-[#1D1B20] uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -46,6 +63,11 @@
                 <tbody class="divide-y divide-[#E7E0EC]">
                     @forelse ($books as $book)
                         <tr class="hover:bg-[#FDF7FF] transition-colors group">
+                            <td class="px-6 py-4 whitespace-nowrap align-top">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#E8DEF8] text-[#6750A4]">
+                                    #{{ $book->Id_Buku }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <div class="h-20 w-14 rounded-lg overflow-hidden border border-[#E7E0EC] shadow-sm">
                                     <img src="{{ $book->cover_url }}" 
@@ -65,6 +87,9 @@
                                 @else
                                     <span class="text-xs text-[#49454F]">-</span>
                                 @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap align-top">
+                                <span class="text-sm text-[#49454F] font-medium">{{ $book->tahun_pengadaan ?? '-' }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap align-top">
                                 <div class="flex items-center gap-2">
@@ -210,11 +235,16 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-xs font-bold text-[#49454F] uppercase tracking-wider mb-2">ISBN</label>
-                                <input type="text" wire:model="isbn" class="w-full rounded-xl border-[#79747E] focus:border-[#6750A4] focus:ring-2 focus:ring-[#6750A4]/20 py-3 px-4 font-mono">
+                                <label class="block text-xs font-bold text-[#49454F] uppercase tracking-wider mb-2">ISBN (Max 28 Karakter)</label>
+                                <input type="text" wire:model="isbn" maxlength="28" placeholder="Contoh: 978-602-291-663-5" class="w-full rounded-xl border-[#79747E] focus:border-[#6750A4] focus:ring-2 focus:ring-[#6750A4]/20 py-3 px-4 font-mono">
                                 @error('isbn') <p class="text-[#B3261E] text-xs mt-1 ml-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-[#49454F] uppercase tracking-wider mb-2">Tahun Pengadaan</label>
+                                <input type="number" wire:model="tahun_pengadaan" placeholder="Contoh: 2024" min="1900" max="{{ date('Y')+1 }}" class="w-full rounded-xl border-[#79747E] focus:border-[#6750A4] focus:ring-2 focus:ring-[#6750A4]/20 py-3 px-4">
+                                @error('tahun_pengadaan') <p class="text-[#B3261E] text-xs mt-1 ml-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-[#49454F] uppercase tracking-wider mb-2">Total Stok *</label>

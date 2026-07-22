@@ -90,6 +90,26 @@ class User extends Authenticatable
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'Id_Pengguna'); // we don't strictly have to change reviews but good practice
+        return $this->hasMany(Review::class, 'Id_Pengguna');
+    }
+
+    /**
+     * Accessor untuk Tautan WhatsApp Pengguna.
+     */
+    public function getWaUrlAttribute(): ?string
+    {
+        if (!$this->No_Telepon_Pengguna) {
+            return null;
+        }
+
+        // Hapus karakter non-digit
+        $cleanPhone = preg_replace('/[^0-9]/', '', $this->No_Telepon_Pengguna);
+
+        // Jika diawali 08, ganti dengan 628
+        if (str_starts_with($cleanPhone, '08')) {
+            $cleanPhone = '628' . substr($cleanPhone, 2);
+        }
+
+        return 'https://wa.me/' . $cleanPhone;
     }
 }

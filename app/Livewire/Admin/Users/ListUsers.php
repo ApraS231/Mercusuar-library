@@ -85,7 +85,8 @@ class ListUsers extends Component
                 // Pastikan pencarian di dalam group ()
                 $query->where(function ($q) {
                     $q->where('Nama_Pengguna', 'like', '%'.$this->search.'%')
-                      ->orWhere('Email_Pengguna', 'like', '%'.$this->search.'%');
+                      ->orWhere('Email_Pengguna', 'like', '%'.$this->search.'%')
+                      ->orWhere('No_Telepon_Pengguna', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->filterRole !== 'all', function ($query) {
